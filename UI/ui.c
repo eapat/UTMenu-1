@@ -2,6 +2,7 @@
 #include "canvas.h"
 #include "LCD12864.h"
 #include "boolpin.h"
+#include "menu.h"
 
 Canvas canvas;
 Font fontRegular;
@@ -11,6 +12,8 @@ Boolpin btnPrev;
 Boolpin btnNext;
 Boolpin btnBack;
 Boolpin btnFunc;
+
+extern MenuItem rootItem;
 
 //Инициализация пользовательского интерфейса
 void UI_init(void){
@@ -43,6 +46,8 @@ void UI_handler(void){
 
 	sprintf(canvas.strBuff,"%d",i);
 	Canvas_drawString(&canvas,0,0,canvas.strBuff);
+	Canvas_drawString(&canvas,10,10,rootItem.text);
+
 	LCD_draw(&canvas);
 
 }
