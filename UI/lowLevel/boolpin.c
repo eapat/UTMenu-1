@@ -48,7 +48,7 @@ bool Boolpin_update(Boolpin* boolpin) {
 
     	if(boolpin->currentPeriod_ms>100)
     	{
-    		boolpin->currentPeriod_ms=(int)boolpin->currentPeriod_ms*0.9;
+    		boolpin->currentPeriod_ms=(int)(boolpin->currentPeriod_ms*0.9);
     	}
     }
     
