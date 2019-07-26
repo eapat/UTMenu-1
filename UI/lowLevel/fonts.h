@@ -1,7 +1,7 @@
 #ifndef __FONTS_H
 #define __FONTS_H
 
-#include "stm32f4xx_hal.h"
+#include <stdint.h>
 
 typedef struct {
 	uint8_t type;

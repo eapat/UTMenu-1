@@ -51,8 +51,8 @@
 #define LCD_DISP_PORT   GPIOB
 #define LCD_DISP_PIN    GPIO_PIN_14
 
-void LCD_init(void);
-void LCD_reset(void);
+void LCD_init();
+void LCD_reset();
 void LCD_draw(Canvas* canvas);
 
 #endif

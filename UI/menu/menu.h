@@ -7,4 +7,7 @@ typedef struct{
 	char* text;
 }MenuItem;
 
+extern MenuItem Null_Menu;
+extern MenuItem rootItem;
+
 #endif

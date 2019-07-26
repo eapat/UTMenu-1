@@ -48,7 +48,7 @@ void LCD_WriteComand(uint8_t data) {
   LCDWriteByte(data, 0);
 }
 
-void LCD_init(void) {
+void LCD_init() {
 	HAL_GPIO_WritePin(LCD_DB0_PORT,LCD_DB0_PIN,GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(LCD_DB1_PORT,LCD_DB1_PIN,GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(LCD_DB2_PORT,LCD_DB2_PIN,GPIO_PIN_RESET);
@@ -118,7 +118,7 @@ void LCD_draw(Canvas* canvas) {
 		for (uint8_t j = 0; j < rows; j++) {
 			LCD_WriteComand(0xB0 + j);
 			for (uint8_t i = 0; i < canvas->width; i++) {
-				if ((i < 128)&(j < 8)) {
+				if ((i < canvas->width)&(j < 8)) {
 					LCD_WriteData(canvas->bitmap[j*canvas->width + i]);
 				}
 			}
