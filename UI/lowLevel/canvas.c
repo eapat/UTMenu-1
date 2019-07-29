@@ -3,13 +3,12 @@
 #include <stdlib.h>
 
 
-void Canvas_init(Canvas* canvas,Font* font,uint8_t width, uint8_t height) {
+void Canvas_init(Canvas* canvas,uint8_t width, uint8_t height) {
 	canvas->width = width;
 	canvas->height = height;
 	uint8_t rows = height / 8;
 	if (height % 8 > 0) rows++;
 	canvas->bitmap = malloc(rows*width);
-	canvas->font = font;
 	Canvas_clear(canvas);
 }
 
@@ -39,57 +38,57 @@ void Canvas_drawPixel(Canvas* canvas, uint8_t x, uint8_t y, uint8_t color) {
 
 
 
-void Canvas_drawChar(Canvas* canvas, uint8_t* x, uint8_t y, char c) {
-	uint8_t width = Font_getWidth(canvas->font, c);
-	uint8_t bs = canvas->font->height / 8;
-	if (canvas->font->height % 8 > 0) bs++;
+void Canvas_drawChar(Canvas* canvas, uint8_t* x, uint8_t y, char c,Font* font) {
+	uint8_t width = Font_getWidth(font, c);
+	uint8_t bs = font->height / 8;
+	if (font->height % 8 > 0) bs++;
 	uint8_t color = 0;
-	for (uint8_t col = 0; col < width + 1 + canvas->font->spacing; col++) {
-		color = canvas->font->inversion;
-		if (canvas->font->transparent) {
+	for (uint8_t col = 0; col < width + 1 + font->spacing; col++) {
+		color = font->inversion;
+		if (font->transparent) {
 			if (color) Canvas_drawPixel(canvas, *x + col, y, color);
 		} else Canvas_drawPixel(canvas, *x + col, y, color);
 	}
-	for (uint8_t row = 0; row < canvas->font->height; row++) {
-		color = canvas->font->inversion;
-		if (canvas->font->transparent) {
+	for (uint8_t row = 0; row < font->height; row++) {
+		color = font->inversion;
+		if (font->transparent) {
 			if (color) Canvas_drawPixel(canvas, *x, y + row + 1, color);
 		} else Canvas_drawPixel(canvas, *x, y + row + 1, color);
 	}
 	uint8_t n = AnsiToIndex(c);
 	for (uint8_t col = 0; col < width; col++) {
-		for (uint8_t row = 0; row < canvas->font->height; row++) {
+		for (uint8_t row = 0; row < font->height; row++) {
 			if (row < 8) {
-				if (canvas->font->type == FONT_5x8) color = ((Font_pattern5x8[n][col + 1] >> row) & 1) ^ canvas->font->inversion;
-				if (canvas->font->type == FONT_8x12B) color = ((Font_pattern8x12[n][col * 2 + 1] >> row) & 1) ^ canvas->font->inversion;
-				if (canvas->font->type == FONT_8x12S) color = ((Font_pattern8x12s[n][col * 2 + 1] >> row) & 1) ^ canvas->font->inversion;
-				if (canvas->font->transparent) {
+				if (font->type == FONT_5x8) color = ((Font_pattern5x8[n][col + 1] >> row) & 1) ^ font->inversion;
+				if (font->type == FONT_8x12B) color = ((Font_pattern8x12[n][col * 2 + 1] >> row) & 1) ^ font->inversion;
+				if (font->type == FONT_8x12S) color = ((Font_pattern8x12s[n][col * 2 + 1] >> row) & 1) ^ font->inversion;
+				if (font->transparent) {
 					if (color) Canvas_drawPixel(canvas, *x + col + 1, y + row + 1, color);
 				} else Canvas_drawPixel(canvas, *x + col + 1, y + row + 1, color);
 			} else {
-				if (canvas->font->type == FONT_8x12B) color = ((Font_pattern8x12[n][col * 2 + 2] >> (row-8)) & 1) ^ canvas->font->inversion;
-				if (canvas->font->type == FONT_8x12S) color = ((Font_pattern8x12s[n][col * 2 + 2] >> (row-8)) & 1) ^ canvas->font->inversion;
-				if (canvas->font->transparent) {
+				if (font->type == FONT_8x12B) color = ((Font_pattern8x12[n][col * 2 + 2] >> (row-8)) & 1) ^ font->inversion;
+				if (font->type == FONT_8x12S) color = ((Font_pattern8x12s[n][col * 2 + 2] >> (row-8)) & 1) ^ font->inversion;
+				if (font->transparent) {
 					if (color) Canvas_drawPixel(canvas, *x + col + 1, y + row + 1, color);
 				} else Canvas_drawPixel(canvas, *x + col + 1, y + row + 1, color);
 			}
 		}
 	}
-	for (uint8_t col = width; col < width + canvas->font->spacing; col++) {
-		for (uint8_t row = 0; row < canvas->font->height; row++) {
-			color = canvas->font->inversion;
-			if (canvas->font->transparent) {
+	for (uint8_t col = width; col < width + font->spacing; col++) {
+		for (uint8_t row = 0; row < font->height; row++) {
+			color = font->inversion;
+			if (font->transparent) {
 				if (color) Canvas_drawPixel(canvas, *x + col + 1, y + row + 1, color);
 			} else Canvas_drawPixel(canvas, *x + col + 1, y + row + 1, color);
 		}
 	}
-	*x += width + 1 + canvas->font->spacing;
+	*x += width + 1 + font->spacing;
 }
 
-void Canvas_drawString(Canvas* canvas, uint8_t x, uint8_t y, char *s) {
+void Canvas_drawString(Canvas* canvas, uint8_t x, uint8_t y, char *s,Font* font) {
 	uint8_t i = x;
 	while(*s != 0) {
-		Canvas_drawChar(canvas, &i, y, *s);
+		Canvas_drawChar(canvas, &i, y, *s,font);
 		s++;
 	}
 }

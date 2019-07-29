@@ -1,4 +1,5 @@
-#include "stm32f4xx_hal.h"
+#include <stdint.h>
+#include "stm32f4xx.h"
 #include <stdbool.h>
 
 #ifndef __BOOLPIN_H
