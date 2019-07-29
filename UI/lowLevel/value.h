@@ -13,11 +13,11 @@ enum ValueType {
 
 
 typedef struct {
-	void*			vl;
+	void*		vl;
 	enum ValueType	type;
-	char**			units;
-	float			max;
-	float			min;
+	char**		units;
+	float		max;
+	float		min;
 } Value;
 
 #define MAKE_VALUE(Name, Value, Type, Units, max , min) \
