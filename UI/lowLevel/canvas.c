@@ -119,10 +119,10 @@ void Canvas_drawFrame(Canvas* canvas, Layout* layout) {
 
 
 			// draw borders
-			Canvas_drawLineH(canvas, x1, y1, x2 - x1);
-			Canvas_drawLineH(canvas, x1, y2-penWidth, x2 - x1);
-			Canvas_drawLineV(canvas, x1, y1, y2 - y1);
-			Canvas_drawLineV(canvas, x2-penWidth, y1, y2 - y1);
+			Canvas_drawLineH(canvas, x1, y1, x2 - x1+1);
+			Canvas_drawLineH(canvas, x1, y2-penWidth+1, x2 - x1+1);
+			Canvas_drawLineV(canvas, x1, y1, y2 - y1+1);
+			Canvas_drawLineV(canvas, x2-penWidth+1, y1, y2 - y1+1);
 		}
 }
 
@@ -182,6 +182,32 @@ void Canvas_drawString(Canvas* canvas, uint8_t x, uint8_t y, char *s,Font* font)
 		Canvas_drawChar(canvas, &i, y, *s,font);
 		s++;
 	}
+}
+
+void Canvas_drawDynamicString(Canvas* canvas,Layout* layout,Font* font,char* s,enum Layout_align align){
+	//Нам надо нарисовать строку в квадрате
+	//Смотрим влезаем ли мы по высоте
+	if(layout->height<font->height)
+	{
+		Canvas_drawFrame(canvas,layout);
+		return;
+	}
+	//Количество символов
+	uint8_t n=strlen(s);
+
+	//Количество символов которое влезает в layout
+	uint8_t snum=layout->width/((font->width+1+1));
+
+	if(snum>0){
+		strncpy(canvas->strBuff, s, snum);
+		canvas->strBuff[snum]='\0';
+		uint8_t y=layout->y+(layout->height-font->height)/2;
+		Canvas_drawString(canvas,layout->x,y,canvas->strBuff,font);
+	}
+
+
+
+
 }
 
 

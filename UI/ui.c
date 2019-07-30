@@ -37,7 +37,7 @@ void UI_init(void){
 	Canvas_init(&canvas,128,64);
 	canvas.pen.color=1;
 
-	canvas.pen.style=PS_DOT;
+	canvas.pen.style=PS_SOLID;
 
 	canvas.brush.color=1;
 
@@ -58,23 +58,25 @@ void UI_init(void){
 
 //Обработчик пользователского интерфейса, обновление дисплея, кнопок
 void UI_handler(void){
-	static uint8_t i=0;
+	static uint8_t i=20;
 	static bool up=true;
 	Canvas_clear(&canvas);
 
-	Layout layout={LAYOUT_FILL,0,0,128,64};
+	Layout layout={LAYOUT_FILL,10,10,54,20};
 
-	canvas.pen.width=i;
+	//canvas.pen.width=1;
 
 	if(Boolpin_update(&btnPrev))
 		{
 			i--;
 			fval--;
+			canvas.pen.width++;
 		}
 
 	if(Boolpin_update(&btnNext)){
 			i++;
 			fval++;
+			canvas.pen.width--;
 		}
 
 	if(Boolpin_update(&btnFunc))
@@ -85,7 +87,9 @@ void UI_handler(void){
 	}
 
 	Canvas_drawFrame(&canvas,&layout);
-	Canvas_drawString(&canvas,10,10,Value_to_string(&value),&fontBold);
+	Canvas_drawLineH(&canvas,10,20,54);
+	//Canvas_drawDynamicString(&canvas,&layout,&fontRegular,"123456789",ALIGN_LEFT);
+	Canvas_drawString(&canvas,10,10,"111111111",&fontRegular);
 	//Canvas_drawLineV(&canvas,0,0,40);
 
 	/*

@@ -39,6 +39,7 @@ typedef struct {
 } Pen;
 
 enum Layout_type{LAYOUT_CUSTOM,LAYOUT_FILL,LAYOUT_CENTER};
+enum Layout_align{ALIGN_LEFT,ALIGN_CENTER,ALIGN_RIGHT};
 
 //Структура для хранения параметров контейнра
 typedef struct {
