@@ -85,6 +85,7 @@ void Canvas_drawChar(Canvas* canvas, uint8_t* x, uint8_t y, char c,Font* font) {
 	*x += width + 1 + font->spacing;
 }
 
+
 void Canvas_drawString(Canvas* canvas, uint8_t x, uint8_t y, char *s,Font* font) {
 	uint8_t i = x;
 	while(*s != 0) {
