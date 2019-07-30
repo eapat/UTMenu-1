@@ -41,7 +41,7 @@ typedef struct {
 int Value_Init_As_Int(Value* this, uint16_t* value, char** units, float max, float min, enum ValueFactor factor);
 int Value_Init_As_Float(Value* this, float* value, char** units, float max, float min, enum ValueFactor factor, uint8_t dAD);
 int Value_Init_As_Bool(Value* this, bool* value, char** units);
-int Value_Init_As_Enum(Value* this, uint8_t* value, char** units, float max, float min);
+int Value_Init_As_Enum(Value* this, uint8_t* value, char** units,  float min);
 char* Value_to_string(Value* this);
 
 

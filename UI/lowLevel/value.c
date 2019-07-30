@@ -1,4 +1,4 @@
-#include <math.h>
+﻿#include <math.h>
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
@@ -6,6 +6,12 @@
 #define VAL_BUF_SIZE 20
 
 static char valStrBuf[VAL_BUF_SIZE];
+
+//Убрать ValueFactor
+//Добавить пробелы
+//IncDec
+//Стиль_дляМетодовТакойВот
+//привести к int
 
 void Value_add_units_to_string(Value* this);
 void Value_int_to_string(Value* this);
@@ -52,8 +58,7 @@ int Value_Init_As_Bool(Value* this, bool* value, char** units){
 	return 0;
 }
 
-int Value_Init_As_Enum(Value* this, uint8_t* value, char** units, float max, float min){
-	if (max<min) return -1;
+int Value_Init_As_Enum(Value* this, uint8_t* value, char** units,  float min){
 	this->vl = (void*)value;
 	this->units = units;
 	this->type = VALUE_ENUM;
@@ -87,7 +92,7 @@ char* Value_to_string(Value* this){
 
 void Value_add_units_to_string(Value* this){
 	int len = strlen(valStrBuf);
-	strncpy(valStrBuf, this->units[0], VAL_BUF_SIZE-len-1);
+	strncat(valStrBuf, this->units[0], VAL_BUF_SIZE-len-1);
 	valStrBuf[VAL_BUF_SIZE-1] = '\0';
 }
 
@@ -119,8 +124,14 @@ void Value_bool_to_string(Value* this){
 
 void Value_enum_to_string(Value* this){
 	uint8_t temp = *(uint8_t* )this->vl;
-	strncpy(valStrBuf, this->units[temp], VAL_BUF_SIZE-1);
-	valStrBuf[VAL_BUF_SIZE-1] = '\0';
+
+	if(temp<this->min || temp>=this->max){
+		strcpy(valStrBuf,"nan");
+	}
+	else{
+		strncpy(valStrBuf, this->units[temp-(int)this->min], VAL_BUF_SIZE-1);
+		valStrBuf[VAL_BUF_SIZE-1] = '\0';
+	}
 }
 
 

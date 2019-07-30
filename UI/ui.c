@@ -4,6 +4,7 @@
 #include "boolpin.h"
 #include "menu.h"
 #include "menu_window.h"
+#include "value.h"
 
 Canvas canvas;
 Canvas canvas2;
@@ -17,6 +18,10 @@ Boolpin btnBack;
 Boolpin btnFunc;
 
 MenuWindow menuWindow;
+
+Value value;
+char * units []={"Вкл.","Откл.","C","BUS"};
+uint16_t fval=0;
 
 //Инициализация пользовательского интерфейса
 void UI_init(void){
@@ -35,6 +40,11 @@ void UI_init(void){
 	canvas.pen.style=PS_DOT;
 
 	canvas.brush.color=1;
+
+
+	Value_Init_As_Int(&value,&fval,units,200,10,0);
+
+
 
 
 
@@ -59,10 +69,12 @@ void UI_handler(void){
 	if(Boolpin_update(&btnPrev))
 		{
 			i--;
+			fval--;
 		}
 
 	if(Boolpin_update(&btnNext)){
 			i++;
+			fval++;
 		}
 
 	if(Boolpin_update(&btnFunc))
@@ -73,7 +85,7 @@ void UI_handler(void){
 	}
 
 	Canvas_drawFrame(&canvas,&layout);
-	Canvas_drawString(&canvas,10,10,"Текст",&fontBold);
+	Canvas_drawString(&canvas,10,10,Value_to_string(&value),&fontBold);
 	//Canvas_drawLineV(&canvas,0,0,40);
 
 	/*
