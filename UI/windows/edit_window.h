@@ -3,7 +3,6 @@
 
 #include <stdbool.h>
 #include "canvas.h"
-#include "layout.h"
 #include "value.h"
 
 typedef struct {
