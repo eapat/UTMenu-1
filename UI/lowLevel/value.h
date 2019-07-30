@@ -31,7 +31,7 @@ typedef struct {
 	float				max;
 	float				min;
 	enum ValueFactor	factor;
-	uint8_t 			digitsAfterDot;	//количество знаков после запятой
+	uint8_t 			digitsAfterDot;	//РєРѕР»РёС‡РµСЃС‚РІРѕ Р·РЅР°РєРѕРІ РїРѕСЃР»Рµ Р·Р°РїСЏС‚РѕР№
 } Value;
 
 
