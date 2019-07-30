@@ -1,9 +1,17 @@
 #include <math.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdio.h>
 #include "value.h"
+#define VAL_BUF_SIZE 20
 
+static char valStrBuf[VAL_BUF_SIZE];
 
-
-
+void Value_add_units_to_string(Value* this);
+void Value_int_to_string(Value* this);
+void Value_float_to_string(Value* this);
+void Value_bool_to_string(Value* this);
+void Value_enum_to_string(Value* this);
 
 
 
@@ -57,9 +65,62 @@ int Value_Init_As_Enum(Value* this, uint8_t* value, char** units, float max, flo
 }
 
 
-char* Value_to_string(void){
-
+char* Value_to_string(Value* this){
+	switch (this->type){
+	case VALUE_INT:
+		Value_int_to_string(this);
+		Value_add_units_to_string(this);
+		break;
+	case VALUE_FLOAT:
+		Value_float_to_string(this);
+		Value_add_units_to_string(this);
+		break;
+	case VALUE_BOOL:
+		Value_bool_to_string(this);
+		break;
+	case VALUE_ENUM:
+		Value_enum_to_string(this);
+		break;
+	}
+	return valStrBuf;
 }
 
+void Value_add_units_to_string(Value* this){
+	int len = strlen(valStrBuf);
+	strncpy(valStrBuf, this->units[0], VAL_BUF_SIZE-len-1);
+	valStrBuf[VAL_BUF_SIZE-1] = '\0';
+}
+
+void Value_int_to_string(Value* this){
+	sprintf(valStrBuf,"%d",*(uint16_t* )this->vl);
+}
+
+void Value_float_to_string(Value* this){
+	switch (this->digitsAfterDot){
+	case 0:
+		sprintf(valStrBuf,"%.0f",*(float* )this->vl);
+		break;
+	case 1:
+		sprintf(valStrBuf,"%.1f",*(float* )this->vl);
+		break;
+	default:
+		sprintf(valStrBuf,"%.2f",*(float* )this->vl);
+		break;
+	}
+}
+
+
+void Value_bool_to_string(Value* this){
+	uint8_t temp = *(uint8_t* )this->vl;
+	if (temp>1) temp = 1;
+	strncpy(valStrBuf, this->units[temp], VAL_BUF_SIZE-1);
+	valStrBuf[VAL_BUF_SIZE-1] = '\0';
+}
+
+void Value_enum_to_string(Value* this){
+	uint8_t temp = *(uint8_t* )this->vl;
+	strncpy(valStrBuf, this->units[temp], VAL_BUF_SIZE-1);
+	valStrBuf[VAL_BUF_SIZE-1] = '\0';
+}
 
 
