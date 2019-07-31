@@ -21,7 +21,7 @@ MenuWindow menuWindow;
 
 Value value;
 char * units []={"Вкл.","Откл.","C","BUS"};
-uint16_t fval=0;
+uint16_t fval=56;
 
 //Инициализация пользовательского интерфейса
 void UI_init(void){
@@ -32,11 +32,12 @@ void UI_init(void){
 	Boolpin_init(&btnFunc,BTN_FUNC_PORT,BTN_FUNC_PIN,BTN_DEBOUNCE_MS,0,0);
 
 	Font_init(&fontRegular,FONT_5x8, F_SPACING_0, FS_NORMAL, BG_TRANS);
-	Font_init(&fontBold,FONT_8x12B, F_SPACING_0, FS_NORMAL, BG_FILL);
+	Font_init(&fontBold,FONT_8x12B, F_SPACING_0, FS_NORMAL, BG_TRANS);
 
 	Canvas_init(&canvas,128,64);
 	canvas.pen.color=1;
 
+	canvas.pen.width=1;
 	canvas.pen.style=PS_SOLID;
 
 	canvas.brush.color=1;
@@ -62,7 +63,7 @@ void UI_handler(void){
 	static bool up=true;
 	Canvas_clear(&canvas);
 
-	Layout layout={LAYOUT_FILL,10,10,54,20};
+	Layout layout={LAYOUT_FILL,0,0,fval,40};
 
 	//canvas.pen.width=1;
 
@@ -70,13 +71,13 @@ void UI_handler(void){
 		{
 			i--;
 			fval--;
-			canvas.pen.width++;
+			//canvas.pen.width++;
 		}
 
 	if(Boolpin_update(&btnNext)){
 			i++;
 			fval++;
-			canvas.pen.width--;
+			//canvas.pen.width--;
 		}
 
 	if(Boolpin_update(&btnFunc))
@@ -87,9 +88,11 @@ void UI_handler(void){
 	}
 
 	Canvas_drawFrame(&canvas,&layout);
-	Canvas_drawLineH(&canvas,10,20,54);
-	//Canvas_drawDynamicString(&canvas,&layout,&fontRegular,"123456789",ALIGN_LEFT);
-	Canvas_drawString(&canvas,10,10,"111111111",&fontRegular);
+	//Canvas_drawLineH(&canvas,10,30,54);
+	Canvas_drawDynamicString(&canvas,&layout,&fontBold,"22222222222",ALIGN_LEFT);
+	//Canvas_drawString(&canvas,0,0,"11111",&fontBold);
+	//Canvas_drawString(&canvas,0,20,"22222",&fontBold);
+	//Canvas_drawString(&canvas,10,40,Value_to_string(&value),&fontRegular);
 	//Canvas_drawLineV(&canvas,0,0,40);
 
 	/*

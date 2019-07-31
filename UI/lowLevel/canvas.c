@@ -196,7 +196,7 @@ void Canvas_drawDynamicString(Canvas* canvas,Layout* layout,Font* font,char* s,e
 	uint8_t n=strlen(s);
 
 	//Количество символов которое влезает в layout
-	uint8_t snum=layout->width/((font->width+1+1));
+	uint8_t snum=layout->width/((font->width+1+font->spacing));
 
 	if(snum>0){
 		strncpy(canvas->strBuff, s, snum);
