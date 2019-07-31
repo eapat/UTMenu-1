@@ -4,6 +4,7 @@
 #include "boolpin.h"
 #include "menu.h"
 #include "menu_window.h"
+#include "value.h"
 
 Canvas canvas;
 Canvas canvas2;
@@ -18,6 +19,10 @@ Boolpin btnFunc;
 
 MenuWindow menuWindow;
 
+Value value;
+char * units []={"Вкл.","Откл.","C","BUS"};
+uint16_t fval=56;
+
 //Инициализация пользовательского интерфейса
 void UI_init(void){
 
@@ -27,26 +32,74 @@ void UI_init(void){
 	Boolpin_init(&btnFunc,BTN_FUNC_PORT,BTN_FUNC_PIN,BTN_DEBOUNCE_MS,0,0);
 
 	Font_init(&fontRegular,FONT_5x8, F_SPACING_0, FS_NORMAL, BG_TRANS);
-	Font_init(&fontBold,FONT_8x12B, F_SPACING_0, FS_INVERT, BG_TRANS);
+	Font_init(&fontBold,FONT_8x12B, F_SPACING_0, FS_NORMAL, BG_TRANS);
 
 	Canvas_init(&canvas,128,64);
+	canvas.pen.color=1;
+
+	canvas.pen.width=1;
+	canvas.pen.style=PS_SOLID;
+
+	canvas.brush.color=1;
+
+
+	Value_Init_As_Int(&value,&fval,units,200,10,0);
+
+
+
+
+
 	LCD_init();
 
 	Layout layout={LAYOUT_FILL,0,0,70,40};
 
 	MenuWindow_init(&menuWindow,&canvas,&fontBold,layout);
 	MenuWindow_setMenuList(&menuWindow,&rootItem);
-
-
 }
 
 //Обработчик пользователского интерфейса, обновление дисплея, кнопок
 void UI_handler(void){
+	static uint8_t i=20;
+	static bool up=true;
 	Canvas_clear(&canvas);
+
+	Layout layout={LAYOUT_FILL,0,0,fval,40};
+
+	//canvas.pen.width=1;
+
+	if(Boolpin_update(&btnPrev))
+		{
+			i--;
+			fval--;
+			//canvas.pen.width++;
+		}
+
+	if(Boolpin_update(&btnNext)){
+			i++;
+			fval++;
+			//canvas.pen.width--;
+		}
+
+	if(Boolpin_update(&btnFunc))
+	{
+		canvas.brush.style++;
+		if(canvas.brush.style>3)
+			canvas.brush.style=0;
+	}
+
+	Canvas_drawFrame(&canvas,&layout);
+	//Canvas_drawLineH(&canvas,10,30,54);
+	Canvas_drawDynamicString(&canvas,&layout,&fontBold,"22222222222",ALIGN_LEFT);
+	//Canvas_drawString(&canvas,0,0,"11111",&fontBold);
+	//Canvas_drawString(&canvas,0,20,"22222",&fontBold);
+	//Canvas_drawString(&canvas,10,40,Value_to_string(&value),&fontRegular);
+	//Canvas_drawLineV(&canvas,0,0,40);
+
+	/*
 
 	if(Boolpin_update(&btnPrev))
 	{
-			MenuWindow_decPosition(&menuWindow);
+		MenuWindow_decPosition(&menuWindow);
 	}
 	if(Boolpin_update(&btnNext)){
 		MenuWindow_incPosition(&menuWindow);
@@ -58,7 +111,7 @@ void UI_handler(void){
 			MenuWindow_back(&menuWindow);
 
 	MenuWindow_draw(&menuWindow);
+	*/
 
 	LCD_draw(&canvas);
-
 }

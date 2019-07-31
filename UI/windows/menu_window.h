@@ -3,7 +3,7 @@
 #include "canvas.h"
 #include "menu.h"
 #include "stack.h"
-#include "layout.h"
+#include "canvas.h"
 
 
 typedef struct {

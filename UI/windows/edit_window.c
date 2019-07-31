@@ -15,7 +15,7 @@ void EditWindow_start(EditWindow* this, Value* val){
 	this->inProgress = true;
 }
 
-
+/*
 void EditWindow_draw(EditWindow* this){
 	char strBuff[20];
 	switch(this->val->type){
@@ -23,3 +23,4 @@ void EditWindow_draw(EditWindow* this){
 		sprintf(strBuff,"%d",*(uint16_t* )this->val->vl);
 	}
 }
+*/

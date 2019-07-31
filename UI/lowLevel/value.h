@@ -4,6 +4,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+
+#define MAKE_VALUE(Name, Value, Type, Units, max , min, digitsAfterDot) \
+		Value Name = {(void*)&Value, Type, Units, max , min, digitsAfterDot}
+
+
 enum ValueType {
 	VALUE_INT,
 	VALUE_FLOAT,
@@ -11,17 +16,33 @@ enum ValueType {
 	VALUE_ENUM
 };
 
+enum ValueAct {
+	VALUE_INC,
+	VALUE_DEC
+};
 
 typedef struct {
-	void*			vl;
-	enum ValueType	type;
-	char**			units;
-	float			max;
-	float			min;
+	void*				vl;
+	enum ValueType		type;
+	char**				units;
+	float				max;
+	float				min;
+	uint8_t 			digitsAfterDot;	//количество знаков после запятой
 } Value;
 
-#define MAKE_VALUE(Name, Value, Type, Units, max , min) \
-		Value Name = {(void*)&Value, Type, Units, max , min}
+
+
+
+
+int Value_initAsInt(Value* this, int* value, char** units, float max, float min);
+int Value_initAsFloat(Value* this, float* value, char** units, float max, float min, uint8_t digitsAfterDot);
+int Value_initAsBool(Value* this, bool* value, char** units);
+int Value_initAsEnum(Value* this, uint8_t* value, char** units,  float min);
+char* Value_toString(Value* this);
+void Value_inc(Value* this);
+void Value_dec(Value* this);
+void Value_incDec(Value* this, enum ValueAct act);
+
 
 
 
