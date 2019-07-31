@@ -1,9 +1,11 @@
-﻿#include <math.h>
+#include <math.h>
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
 #include "value.h"
 #define VAL_BUF_SIZE 20
+
+
 
 static char valStrBuf[VAL_BUF_SIZE];
 
@@ -18,6 +20,10 @@ void Value_intToString(Value* this);
 void Value_floatToString(Value* this);
 void Value_boolToString(Value* this);
 void Value_enumToString(Value* this);
+
+void Value_incDecFloat(Value* this, enum ValueAct act);
+void Value_incDecEnumAndBool(Value* this, enum ValueAct act);
+void Value_incDecInt(Value* this, enum ValueAct act);
 
 
 
@@ -69,18 +75,18 @@ int Value_initAsEnum(Value* this, uint8_t* value, char** units,  float min){
 char* Value_toString(Value* this){
 	switch (this->type){
 	case VALUE_INT:
-		Value_int_to_string(this);
-		Value_add_units_to_string(this);
+		Value_intToString(this);
+		Value_addUnitsToString(this);
 		break;
 	case VALUE_FLOAT:
-		Value_float_to_string(this);
-		Value_add_units_to_string(this);
+		Value_floatToString(this);
+		Value_addUnitsToString(this);
 		break;
 	case VALUE_BOOL:
-		Value_bool_to_string(this);
+		Value_boolToString(this);
 		break;
 	case VALUE_ENUM:
-		Value_enum_to_string(this);
+		Value_enumToString(this);
 		break;
 	}
 	return valStrBuf;
@@ -132,34 +138,90 @@ void Value_enumToString(Value* this){
 }
 
 
-void Value_inc(Value* this){
+void Value_incDec(Value* this, enum ValueAct act){
 	switch (this->type){
 	case VALUE_INT:
-
+		Value_incDecInt(this, act);
 		break;
 	case VALUE_FLOAT:
-
+		Value_incDecFloat(this, act);
 		break;
 	case VALUE_BOOL:
-
+		Value_incDecEnumAndBool(this, act);
 		break;
 	case VALUE_ENUM:
-
+		Value_incDecEnumAndBool(this, act);
 		break;
 	}
 }
 
-/*
-void Value_incInt(Value* this){
-	this->
-}
 
+void Value_inc(Value* this){
+	Value_incDec(this, VALUE_INC);
+}
 
 void Value_dec(Value* this){
-
+	Value_incDec(this, VALUE_DEC);
 }
 
 
-*/
+void Value_incDecInt(Value* this, enum ValueAct act){
+	int temp = *(int* )this->vl;
+	int min = (int)this->min;
+	int max = (int)this->max;
+	int delta = 1;
+
+
+	temp = (act == VALUE_INC)? temp+delta: temp-delta;
+	if (temp < this->min){
+		temp =  this->min;
+	} else if (temp > this->max){
+		temp =  this->max;
+	}
+
+	*(int* )this->vl = temp;
+}
+
+
+void Value_incDecFloat(Value* this, enum ValueAct act){
+	float temp = *(float* )this->vl;
+	float delta;
+	switch (this->digitsAfterDot){
+	case 0:
+		delta = 1;
+		break;
+	case 1:
+		delta = 0.1;
+		break;
+	default:
+		delta = 0.01;
+		break;
+	}
+
+	temp = (act == VALUE_INC)? temp+delta: temp-delta;
+	if (temp < this->min){
+		temp =  this->min;
+	} else if (temp > this->max){
+		temp =  this->max;
+	}
+	*(int* )this->vl = temp;
+}
+
+void Value_incDecEnumAndBool(Value* this, enum ValueAct act){
+	uint8_t temp = *(uint8_t* )this->vl;
+	int delta = 1;
+	int min = (int)this->min;
+	int max = (int)this->max;
+
+	temp = (act == VALUE_INC)? temp+delta: temp-delta;
+	if (temp < this->min){
+		temp =  this->min;
+	} else if (temp > this->max){
+		temp =  this->max;
+	}
+
+	*(int* )this->vl = temp;
+}
+
 
 

@@ -16,7 +16,10 @@ enum ValueType {
 	VALUE_ENUM
 };
 
-
+enum ValueAct {
+	VALUE_INC,
+	VALUE_DEC
+};
 
 typedef struct {
 	void*				vl;
@@ -38,7 +41,7 @@ int Value_initAsEnum(Value* this, uint8_t* value, char** units,  float min);
 char* Value_toString(Value* this);
 void Value_inc(Value* this);
 void Value_dec(Value* this);
-
+void Value_incDec(Value* this, enum ValueAct act);
 
 
 
