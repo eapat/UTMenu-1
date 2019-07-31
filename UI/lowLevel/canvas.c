@@ -2,41 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-void Layout_Init(Layout* layout,Canvas* canvas,Layout* sourceLayout){
-
-	uint8_t x=sourceLayout->x;
-	uint8_t y=sourceLayout->y;
-	uint8_t w=sourceLayout->width;
-	uint8_t h=sourceLayout->height;
 
 
-	//Произвольный контейнер
-	if(sourceLayout->type==LAYOUT_CUSTOM){
-		layout->x=x<canvas->width-1?x:0;
-		layout->y=y<canvas->height-1?y:0;
-		layout->width=(layout->x+w<=canvas->width)?w:(canvas->width-x);
-		layout->height=(layout->y+h<=canvas->height)?h:(canvas->height-y);
-	}
-	//Заполнение холста
-	else if(sourceLayout->type==LAYOUT_FILL){
-		layout->x=0;
-		layout->y=0;
-		layout->width=canvas->width;
-		layout->height=canvas->height;
-	}
-	//Центр холста
-	else if(sourceLayout->type==LAYOUT_CENTER){
-		if(w>canvas->width)
-			w=canvas->width;
-		layout->width=w;
-
-		layout->width=w<=canvas->width?w:canvas->width;
-		layout->height=h<=canvas->height?h:canvas->height;
-
-		layout->x=(canvas->width-layout->width)/2;
-		layout->y=(canvas->height-layout->height)/2;
-	}
-}
 
 void Canvas_init(Canvas* canvas,uint8_t width, uint8_t height) {
 	canvas->width = width;
@@ -45,7 +12,9 @@ void Canvas_init(Canvas* canvas,uint8_t width, uint8_t height) {
 	if (height % 8 > 0) rows++;
 	canvas->bitmap = malloc(rows*width);
 	Canvas_clear(canvas);
+	Canvas_setStyle(canvas,FRAME_TRANSPARENT);
 }
+
 
 void Canvas_destroy(Canvas* canvas) {
 	if (canvas->bitmap != NULL) {
@@ -61,6 +30,42 @@ void Canvas_clear(Canvas* canvas) {
 		for (uint8_t i = 0; i < canvas->width; i++) {
 			canvas->bitmap[j*canvas->width + i] = 0;
 		}
+	}
+}
+
+void Canvas_calculateLayout(Layout* layout,Canvas* canvas,enum Layout_type type){
+
+	uint8_t x=layout->x;
+	uint8_t y=layout->y;
+	uint8_t w=layout->width;
+	uint8_t h=layout->height;
+
+
+	//Произвольный контейнер
+	if(type==LAYOUT_CUSTOM){
+		layout->x=x<canvas->width-1?x:0;
+		layout->y=y<canvas->height-1?y:0;
+		layout->width=(layout->x+w<=canvas->width)?w:(canvas->width-x);
+		layout->height=(layout->y+h<=canvas->height)?h:(canvas->height-y);
+	}
+	//Заполнение холста
+	else if(type==LAYOUT_FILL){
+		layout->x=0;
+		layout->y=0;
+		layout->width=canvas->width;
+		layout->height=canvas->height;
+	}
+	//Центр холста
+	else if(type==LAYOUT_CENTER){
+		if(w>canvas->width)
+			w=canvas->width;
+		layout->width=w;
+
+		layout->width=w<=canvas->width?w:canvas->width;
+		layout->height=h<=canvas->height?h:canvas->height;
+
+		layout->x=(canvas->width-layout->width)/2;
+		layout->y=(canvas->height-layout->height)/2;
 	}
 }
 
@@ -92,12 +97,34 @@ void Canvas_drawLineV(Canvas* canvas, uint8_t x, uint8_t y, uint8_t len) {
 	}
 }
 
-void Canvas_drawFrame(Canvas* canvas, Layout* layout) {
+void Canvas_setStyle(Canvas* canvas,enum Frame_style style){
 
+	canvas->pen.color=1;
+	canvas->pen.style=PS_SOLID;
+	canvas->pen.width=1;
+
+	if(style==FRAME_TRANSPARENT){
+		canvas->brush.color=0;
+		canvas->brush.style=BS_CLEAR;
+	}
+	else if(style==FRAME_BLACK){
+		canvas->brush.color=0;
+		canvas->brush.style=BS_SOLID;
+	}
+	else if (style==FRAME_WHITE){
+		canvas->brush.color=1;
+		canvas->brush.style=BS_SOLID;
+	}
+}
+
+
+void Canvas_drawFrame(Canvas* canvas, Layout* layout,enum Frame_style style) {
+
+	Canvas_setStyle(canvas,style);
 	uint8_t x1=layout->x;
 	uint8_t y1=layout->y;
 	uint8_t x2=layout->x+layout->width-1;
-	uint8_t y2=layout->x+layout->height-1;
+	uint8_t y2=layout->y+layout->height-1;
 	uint8_t penWidth=canvas->pen.width;
 
 	if ((x1 >= 0)&(x2 < canvas->width)&(y1 >= 0)&(y2 < canvas->height)&(x2 > x1)&(y2 > y1)) {
@@ -184,29 +211,70 @@ void Canvas_drawString(Canvas* canvas, uint8_t x, uint8_t y, char *s,Font* font)
 	}
 }
 
-void Canvas_drawDynamicString(Canvas* canvas,Layout* layout,Font* font,char* s,enum Layout_align align){
-	//Нам надо нарисовать строку в квадрате
-	//Смотрим влезаем ли мы по высоте
-	if(layout->height<font->height)
+/*
+ * Отрисовка строки внутри layout
+ * align-выравнивание
+ * n-номер символа с которого выводить
+ * возвращает true,если строка влезла в layout
+ */
+bool Canvas_drawDynamicString(Canvas* canvas,Layout* layout,Font* font,char* s,enum Layout_align align,uint8_t n){
+
+	uint8_t strLenght=strlen(s);
+	if(layout->height<font->height || n>strLenght)
 	{
-		Canvas_drawFrame(canvas,layout);
-		return;
-	}
-	//Количество символов
-	uint8_t n=strlen(s);
-
-	//Количество символов которое влезает в layout
-	uint8_t snum=layout->width/((font->width+1+font->spacing));
-
-	if(snum>0){
-		strncpy(canvas->strBuff, s, snum);
-		canvas->strBuff[snum]='\0';
-		uint8_t y=layout->y+(layout->height-font->height)/2;
-		Canvas_drawString(canvas,layout->x,y,canvas->strBuff,font);
+		Canvas_drawFrame(canvas,layout,FRAME_WHITE);
+		if(n>strLenght)
+			return true;
+		return false;
 	}
 
+	//Количество символов и их длина, которую можем вывести
+	uint8_t sNum=0;
+	uint8_t sWidth=0;
+	uint8_t tempWidth=0;
 
 
+	if(canvas->s!=s)
+		canvas->s=s;
+
+	//Цикл по всем сиволам строки c n
+	for(int i=n;i<(strLenght);i++)
+	{
+		tempWidth+=Font_getWidth(font, *(s+i))+1+font->spacing;
+		if(tempWidth<layout->width)
+		{
+			sNum++;
+			sWidth=tempWidth;
+		}
+		else
+			break;
+	}
+
+	uint8_t x=0;
+
+
+
+	//Выводим исходя из выравнивания
+	if(align==ALIGN_LEFT)
+		 x = layout->x;
+	else if(align==ALIGN_CENTER)
+		 x=layout->x+(layout->width-sWidth)/2;
+	else if(align==ALIGN_RIGHT)
+		 x=layout->x+layout->width-1-sWidth;
+
+	uint8_t y=layout->y+(layout->height-font->height)/2;
+
+	for(int i=n;i<n+sNum;i++)
+	{
+		Canvas_drawChar(canvas, &x, y, *(s+i),font);
+	}
+
+	if((n+sNum)==strLenght)
+		return true;
+	else
+		return false;
+
+	return false;
 
 }
 

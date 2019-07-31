@@ -22,7 +22,7 @@ int calculateChildsCount(MenuItem* menuItem){
 void MenuWindow_init(MenuWindow* menuWindow,Canvas* canvas,Font* font,Layout layout){
 	menuWindow->canvas=canvas;
 	menuWindow->font=font;
-	Layout_Init(&menuWindow->layout,menuWindow->canvas,&layout);
+	menuWindow->layout=layout;
 }
 
 void MenuWindow_draw(MenuWindow* menuWindow){

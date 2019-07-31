@@ -179,6 +179,7 @@ void Value_incDecInt(Value* this, enum ValueAct act){
 		temp =  this->max;
 	}
 
+	//Êîñÿ÷¸ê
 	*(int* )this->vl = temp;
 }
 
@@ -204,7 +205,7 @@ void Value_incDecFloat(Value* this, enum ValueAct act){
 	} else if (temp > this->max){
 		temp =  this->max;
 	}
-	*(int* )this->vl = temp;
+	*(float* )this->vl = temp;
 }
 
 void Value_incDecEnumAndBool(Value* this, enum ValueAct act){
