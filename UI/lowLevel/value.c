@@ -28,7 +28,9 @@ void Value_incDecInt(Value* this, enum ValueAct act);
 
 
 int Value_initAsInt(Value* this, int* value, char** units, float max, float min){
-	if (max<min) return -1;
+	if (max<min) {
+		while (1){}
+	}
 	this->vl = (void*)value;
 	this->units = units;
 	this->type = VALUE_INT;
@@ -40,7 +42,9 @@ int Value_initAsInt(Value* this, int* value, char** units, float max, float min)
 }
 
 int Value_initAsFloat(Value* this, float* value, char** units, float max, float min, uint8_t digitsAfterDot){
-	if (max<min) return -1;
+	if (max<min) {
+		while (1){}
+	}
 	this->vl = (void*)value;
 	this->units = units;
 	this->type = VALUE_FLOAT;
@@ -169,14 +173,14 @@ void Value_incDecInt(Value* this, enum ValueAct act){
 	int temp = *(int* )this->vl;
 	int min = (int)this->min;
 	int max = (int)this->max;
-	int delta = 1;
+	uint8_t delta = 1;
 
 
 	temp = (act == VALUE_INC)? temp+delta: temp-delta;
-	if (temp < this->min){
-		temp =  this->min;
-	} else if (temp > this->max){
-		temp =  this->max;
+	if (temp < min){
+		temp =  min;
+	} else if (temp > max){
+		temp =  max;
 	}
 
 	*(int* )this->vl = temp;
@@ -204,23 +208,23 @@ void Value_incDecFloat(Value* this, enum ValueAct act){
 	} else if (temp > this->max){
 		temp =  this->max;
 	}
-	*(int* )this->vl = temp;
+	*(float* )this->vl = temp;
 }
 
 void Value_incDecEnumAndBool(Value* this, enum ValueAct act){
 	uint8_t temp = *(uint8_t* )this->vl;
-	int delta = 1;
+	uint8_t delta = 1;
 	int min = (int)this->min;
 	int max = (int)this->max;
 
 	temp = (act == VALUE_INC)? temp+delta: temp-delta;
-	if (temp < this->min){
-		temp =  this->min;
-	} else if (temp > this->max){
-		temp =  this->max;
+	if (temp < min){
+		temp =  min;
+	} else if (temp > max){
+		temp =  max;
 	}
 
-	*(int* )this->vl = temp;
+	*(uint8_t* )this->vl = temp;
 }
 
 
