@@ -5,8 +5,8 @@
 #include <stdbool.h>
 
 
-#define MAKE_VALUE(Name, Value, Type, Units, max , min, factor, digitsAfterDot) \
-		Value Name = {(void*)&Value, Type, Units, max , min, factor, digitsAfterDot}
+#define MAKE_VALUE(Name, Value, Type, Units, max , min, digitsAfterDot) \
+		Value Name = {(void*)&Value, Type, Units, max , min, digitsAfterDot}
 
 
 enum ValueType {
@@ -16,12 +16,9 @@ enum ValueType {
 	VALUE_ENUM
 };
 
-enum ValueFactor {
-	VALUE_NO_FACT,
-	VALUE_FACT_KILO,
-	VALUE_FACT_MEGA,
-	VALUE_FACT_MILLI,
-	VALUE_FACT_AUTO
+enum ValueAct {
+	VALUE_INC,
+	VALUE_DEC
 };
 
 typedef struct {
@@ -30,7 +27,6 @@ typedef struct {
 	char**				units;
 	float				max;
 	float				min;
-	enum ValueFactor	factor;
 	uint8_t 			digitsAfterDot;	//количество знаков после запятой
 } Value;
 
@@ -38,12 +34,14 @@ typedef struct {
 
 
 
-int Value_Init_As_Int(Value* this, uint16_t* value, char** units, float max, float min, enum ValueFactor factor);
-int Value_Init_As_Float(Value* this, float* value, char** units, float max, float min, enum ValueFactor factor, uint8_t dAD);
-int Value_Init_As_Bool(Value* this, bool* value, char** units);
-int Value_Init_As_Enum(Value* this, uint8_t* value, char** units,  float min);
-char* Value_to_string(Value* this);
-
+int Value_initAsInt(Value* this, int* value, char** units, float max, float min);
+int Value_initAsFloat(Value* this, float* value, char** units, float max, float min, uint8_t digitsAfterDot);
+int Value_initAsBool(Value* this, bool* value, char** units);
+int Value_initAsEnum(Value* this, uint8_t* value, char** units,  float min);
+char* Value_toString(Value* this);
+void Value_inc(Value* this);
+void Value_dec(Value* this);
+void Value_incDec(Value* this, enum ValueAct act);
 
 
 
