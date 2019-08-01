@@ -34,12 +34,15 @@ void EditWindow_start(EditWindow* this, Value* val){
 	this->inProgress = true;
 }
 
-/*
+
 void EditWindow_draw(EditWindow* this){
-	char strBuff[20];
-	switch(this->val->type){
-	case VALUE_INT:
-		sprintf(strBuff,"%d",*(uint16_t* )this->val->vl);
+	if (this->inProgress){
+		Canvas_drawFrame(this->canvas, this->mainLayout, FRAME_WHITE);
+		Canvas_drawFrame(this->canvas, this->bodyLayout, this->bodyStyle);
+		Canvas_drawFrame(this->canvas, this->headerLayout, this->headerStyle);
+		Canvas_drawAlignedString(this->canvas,this->headerLayout,this->headerFont,"Учтех-Профи",ALIGN_CENTER,0);
+		Canvas_drawAlignedString(this->canvas,this->bodyLayout,this->bodyFont,Value_toString(this->val),ALIGN_CENTER,0);
 	}
+
 }
-*/
+
