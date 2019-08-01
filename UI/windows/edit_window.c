@@ -1,6 +1,8 @@
 #include <stdbool.h>
 #include "edit_window.h"
 #include "value.h"
+#include "time_utilities.h"
+
 #define EW_SHIFT_TIME 300
 #define EW_SHIFT_PAUSE 1000
 
@@ -70,15 +72,15 @@ void EditWindow_start(EditWindow* this, Value* val, char* header){
 void EditWindow_draw(EditWindow* this, uint32_t currentTime){
 	if (this->inProgress){
 		int delay = (this->shStr.shiftFlag||this->shStr.shift==0)? EW_SHIFT_PAUSE : EW_SHIFT_TIME;
-		if ((currentTime-this->shStr.prevTime) > delay){
+		if (TimeUtilities_getDelta32(currentTime,this->shStr.prevTime) > delay){
 			this->shStr.prevTime=currentTime;
 			this->shStr.shift=!this->shStr.shiftFlag?this->shStr.shift+1:0;
 		}
 		Canvas_drawFrame(this->canvas, &this->mainLayout, FRAME_WHITE);
 		Canvas_drawFrame(this->canvas, &this->body.layout, this->body.style);
 		Canvas_drawFrame(this->canvas, &this->header.layout, this->header.style);
-		this->shStr.shiftFlag = Canvas_drawAlignedString(this->canvas,&this->header.layout,this->header.font,this->headerText,ALIGN_CENTER,this->shStr.shift);
-		Canvas_drawAlignedString(this->canvas,&this->body.layout,this->body.font,Value_toString(&this->vlCopy),ALIGN_CENTER,0);
+		this->shStr.shiftFlag = Canvas_drawAlignedString(this->canvas,&this->header.layout,this->headerText,this->header.font,ALIGN_CENTER,this->shStr.shift);
+		Canvas_drawAlignedString(this->canvas,&this->body.layout,Value_toString(&this->vlCopy),this->body.font,ALIGN_CENTER,0);
 	}
 
 }
