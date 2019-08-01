@@ -1,6 +1,6 @@
 #include <stdint.h>
-#include "stm32f4xx.h"
 #include <stdbool.h>
+#include "stm32f4xx_hal.h"
 
 #ifndef __BOOLPIN_H
 #define __BOOLPIN_H
@@ -40,6 +40,6 @@ typedef struct {
 }Boolpin;
 
 void Boolpin_init(Boolpin* boolpin,GPIO_TypeDef* port,uint16_t pin,uint16_t debounce_ms,uint16_t delay_ms,uint16_t period_ms);
-bool Boolpin_update();
+bool Boolpin_update(Boolpin* boolpin,uint32_t time);
 
 #endif /* BOOLPIN_H_ */

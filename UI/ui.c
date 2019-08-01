@@ -58,8 +58,8 @@ void UI_init(void){
 	Layout layout={0,0,70,40};
 
 	Canvas_calculateLayout(&canvas,&layout,LAYOUT_FILL);
-	MenuWindow_init(&menuWindow,&canvas,&fontBold,layout);
-	MenuWindow_setMenuList(&menuWindow,&rootItem);
+	MenuWindow_init(&menuWindow,&canvas,layout,&fontBold,&fontBold);
+	MenuWindow_setRootItem(&menuWindow,&rootItem);
 }
 
 //Обработчик пользователского интерфейса, обновление дисплея, кнопок
@@ -70,19 +70,19 @@ void UI_handler(void){
 	static uint32_t prevTime=0;
 	static bool right=true;
 	static bool down=true;
-	uint32_t start=HAL_GetTick();
+	static bool hitFlag=false;
+	uint32_t time=HAL_GetTick();
 
 
-	if(Boolpin_update(&btnPrev))
+	if(Boolpin_update(&btnPrev,time))
 		width--;
-	if(Boolpin_update(&btnNext))
+	if(Boolpin_update(&btnNext,time))
 		width++;
-	if(Boolpin_update(&btnFunc))
+	if(Boolpin_update(&btnFunc,time))
 		height++;
-	if(Boolpin_update(&btnBack))
+	if(Boolpin_update(&btnBack,time))
 		height--;
 
-	uint32_t time=HAL_GetTick();
 
 	if(time-prevTime>300)
 	{
@@ -97,32 +97,57 @@ void UI_handler(void){
 		if(layout.x+layout.width<canvas.width)
 			layout.x++;
 		else
+		{
 			right=false;
+			hitFlag=true;
+		}
 	}
 	else
 	{
 		if(layout.x>0)
 			layout.x--;
 		else
+		{
 			right=true;
+			hitFlag=true;
+		}
 	}
 
 	if(down){
 		if(layout.y+layout.height<canvas.height)
 			layout.y++;
 		else
+		{
 			down=false;
+			hitFlag=true;
+		}
 	}
 	else
 	{
 		if(layout.y>0)
 			layout.y--;
 		else
+		{
 			down=true;
+			hitFlag=true;
+		}
 	}
 
-	Canvas_drawFrame(&canvas,&layout,FRAME_TRANSPARENT);
-	n1Flag=Canvas_drawAlignedString(&canvas,&layout,"Учтех-Профи",&fontBold,ALIGN_CENTER,n1);
+	if(hitFlag){
+		hitFlag=false;
+
+		Canvas_drawFrame(&canvas,&layout,FRAME_WHITE);
+		LCD_draw(&canvas);
+		HAL_Delay(30);
+	}
+	else
+	{
+		Canvas_drawFrame(&canvas,&layout,FRAME_TRANSPARENT);
+		n1Flag=Canvas_drawAlignedString(&canvas,&layout,"Учтех-Профи",&fontBold,ALIGN_CENTER,n1);
+		LCD_draw(&canvas);
+	}
+
+
 
 
 
@@ -166,7 +191,5 @@ void UI_handler(void){
 	MenuWindow_draw(&menuWindow);
 	*/
 
-	LCD_draw(&canvas);
 
-	uint32_t stop=HAL_GetTick()-start;
 }
