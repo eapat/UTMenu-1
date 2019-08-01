@@ -5,12 +5,12 @@
 #define EW_SHIFT_PAUSE 1000
 
 /*
- * Èíèöèàëèçàöèÿ îêíà ðåäàêòèðîâàíèÿ
- * 	EditWindow* this - öåëåâîé îáúåêò
- *	Canvas* canvas - êàíâàñ ñ êîòîðûì ðàáîòàåì
- *	Font* headerFont - øðèôò çàãîëîâêà
- *	Font* bodyFont - øðèôò îòðèñîâêè çíà÷åíèÿ
- *	Layout layout - îáëàñòü â êîòîðîé äîëæíî áûòü îòðèñîâàíî îêíî
+ * Ð˜Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ñ Ð¾ÐºÐ½Ð° Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ
+ * 	EditWindow* this - Ñ†ÐµÐ»ÐµÐ²Ð¾Ð¹ Ð¾Ð±ÑŠÐµÐºÑ‚
+ *	Canvas* canvas - ÐºÐ°Ð½Ð²Ð°Ñ Ñ ÐºÐ¾Ñ‚Ð¾Ñ€Ñ‹Ð¼ Ñ€Ð°Ð±Ð¾Ñ‚Ð°ÐµÐ¼
+ *	Font* headerFont - ÑˆÑ€Ð¸Ñ„Ñ‚ Ð·Ð°Ð³Ð¾Ð»Ð¾Ð²ÐºÐ°
+ *	Font* bodyFont - ÑˆÑ€Ð¸Ñ„Ñ‚ Ð¾Ñ‚Ñ€Ð¸ÑÐ¾Ð²ÐºÐ¸ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ñ
+ *	Layout layout - Ð¾Ð±Ð»Ð°ÑÑ‚ÑŒ Ð² ÐºÐ¾Ñ‚Ð¾Ñ€Ð¾Ð¹ Ð´Ð¾Ð»Ð¶Ð½Ð¾ Ð±Ñ‹Ñ‚ÑŒ Ð¾Ñ‚Ñ€Ð¸ÑÐ¾Ð²Ð°Ð½Ð¾ Ð¾ÐºÐ½Ð¾
  */
 
 void EditWindow_init(EditWindow* this,Canvas* canvas,Layout layout, Font* headerFont, Font* bodyFont){
@@ -27,7 +27,7 @@ void EditWindow_init(EditWindow* this,Canvas* canvas,Layout layout, Font* header
 	this->header.style = (headerFont->inversion == FS_INVERT)? FRAME_WHITE: FRAME_BLACK;
 	if ( this->mainLayout.height < (this->header.layout.height + bodyFont->height + bodyFont->height/2) ){
 	 while(1){
-		 //Îøèáêà èíèöèàëèçàöèè - íåäîñòàòî÷íàÿ âûñîòà Layout ïðè çàäàííûõ øðèôòàõ
+		 //ÐžÑˆÐ¸Ð±ÐºÐ° Ð¸Ð½Ð¸Ñ†Ð¸Ð°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸ - Ð½ÐµÐ´Ð¾ÑÑ‚Ð°Ñ‚Ð¾Ñ‡Ð½Ð°Ñ Ð²Ñ‹ÑÐ¾Ñ‚Ð° Layout Ð¿Ñ€Ð¸ Ð·Ð°Ð´Ð°Ð½Ð½Ñ‹Ñ… ÑˆÑ€Ð¸Ñ„Ñ‚Ð°Ñ…
 	 }
 	}
 
@@ -43,10 +43,10 @@ void EditWindow_init(EditWindow* this,Canvas* canvas,Layout layout, Font* header
 
 
 /*
- * Çàïóñê îêíà ðåäàêòèðîâàíèÿ
- * 	EditWindow* this - öåëåâîé îáúåêò
- *	Value* val - ðåäàêòèðóåìîå çíà÷åíèå
- *	char* header - òåêñò çàãîëîâêà
+ * Ð—Ð°Ð¿ÑƒÑÐº Ð¾ÐºÐ½Ð° Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ
+ * 	EditWindow* this - Ñ†ÐµÐ»ÐµÐ²Ð¾Ð¹ Ð¾Ð±ÑŠÐµÐºÑ‚
+ *	Value* val - Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€ÑƒÐµÐ¼Ð¾Ðµ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ðµ
+ *	char* header - Ñ‚ÐµÐºÑÑ‚ Ð·Ð°Ð³Ð¾Ð»Ð¾Ð²ÐºÐ°
  */
 
 void EditWindow_start(EditWindow* this, Value* val, char* header){
@@ -62,9 +62,9 @@ void EditWindow_start(EditWindow* this, Value* val, char* header){
 
 
 /*
- * Îòðèñîâêà îêíà ðåäàêòèðîâàíèÿ
- * 	EditWindow* this - öåëåâîé îáúåêò
- *	uint32_t currentTime - òåêóùåå âðåìÿ â ms
+ * ÐžÑ‚Ñ€Ð¸ÑÐ¾Ð²ÐºÐ° Ð¾ÐºÐ½Ð° Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ
+ * 	EditWindow* this - Ñ†ÐµÐ»ÐµÐ²Ð¾Ð¹ Ð¾Ð±ÑŠÐµÐºÑ‚
+ *	uint32_t currentTime - Ñ‚ÐµÐºÑƒÑ‰ÐµÐµ Ð²Ñ€ÐµÐ¼Ñ Ð² ms
  */
 
 void EditWindow_draw(EditWindow* this, uint32_t currentTime){
@@ -85,8 +85,8 @@ void EditWindow_draw(EditWindow* this, uint32_t currentTime){
 
 
 /*
- * Îñòàíîâêà îêíà ðåäàêòèðîâàíèÿ
- * 	EditWindow* this - öåëåâîé îáúåêò
+ * ÐžÑÑ‚Ð°Ð½Ð¾Ð²ÐºÐ° Ð¾ÐºÐ½Ð° Ñ€ÐµÐ´Ð°ÐºÑ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ
+ * 	EditWindow* this - Ñ†ÐµÐ»ÐµÐ²Ð¾Ð¹ Ð¾Ð±ÑŠÐµÐºÑ‚
  */
 
 void EditWindow_stop(EditWindow* this){
@@ -94,8 +94,8 @@ void EditWindow_stop(EditWindow* this){
 }
 
 /*
- * Èíêðåìåíòèðîâàíèå çíà÷åíèÿ â îêíå
- * 	EditWindow* this - öåëåâîé îáúåêò
+ * Ð˜Ð½ÐºÑ€ÐµÐ¼ÐµÐ½Ñ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ñ Ð² Ð¾ÐºÐ½Ðµ
+ * 	EditWindow* this - Ñ†ÐµÐ»ÐµÐ²Ð¾Ð¹ Ð¾Ð±ÑŠÐµÐºÑ‚
  */
 
 void EditWindow_inc(EditWindow* this){
@@ -105,8 +105,8 @@ void EditWindow_inc(EditWindow* this){
 }
 
 /*
- * Äåêðåìåíòèðîâàíèå çíà÷åíèÿ â îêíå
- * 	EditWindow* this - öåëåâîé îáúåêò
+ * Ð”ÐµÐºÑ€ÐµÐ¼ÐµÐ½Ñ‚Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ðµ Ð·Ð½Ð°Ñ‡ÐµÐ½Ð¸Ñ Ð² Ð¾ÐºÐ½Ðµ
+ * 	EditWindow* this - Ñ†ÐµÐ»ÐµÐ²Ð¾Ð¹ Ð¾Ð±ÑŠÐµÐºÑ‚
  */
 
 void EditWindow_dec(EditWindow* this){
@@ -116,8 +116,8 @@ void EditWindow_dec(EditWindow* this){
 }
 
 /*
- * Âûõîä èç îêíà ñ ñîçðàíåíèåì èçìåíåíèé
- * 	EditWindow* this - öåëåâîé îáúåêò
+ * Ð’Ñ‹Ñ…Ð¾Ð´ Ð¸Ð· Ð¾ÐºÐ½Ð° Ñ ÑÐ¾Ð·Ñ€Ð°Ð½ÐµÐ½Ð¸ÐµÐ¼ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ð¹
+ * 	EditWindow* this - Ñ†ÐµÐ»ÐµÐ²Ð¾Ð¹ Ð¾Ð±ÑŠÐµÐºÑ‚
  */
 void EditWindow_enter(EditWindow* this){
 	if (this->inProgress){
@@ -140,8 +140,8 @@ void EditWindow_enter(EditWindow* this){
 }
 
 /*
- * Âûõîä èç îêíà áåç ñîõðàíåíèÿ èçìåíåíèé
- * 	EditWindow* this - öåëåâîé îáúåêò
+ * Ð’Ñ‹Ñ…Ð¾Ð´ Ð¸Ð· Ð¾ÐºÐ½Ð° Ð±ÐµÐ· ÑÐ¾Ñ…Ñ€Ð°Ð½ÐµÐ½Ð¸Ñ Ð¸Ð·Ð¼ÐµÐ½ÐµÐ½Ð¸Ð¹
+ * 	EditWindow* this - Ñ†ÐµÐ»ÐµÐ²Ð¾Ð¹ Ð¾Ð±ÑŠÐµÐºÑ‚
  */
 
 void EditWindow_back(EditWindow* this){
@@ -149,8 +149,8 @@ void EditWindow_back(EditWindow* this){
 }
 
 /*
- * Ïðîâåðêà ñîñòîÿíèÿ îêíà
- * 	EditWindow* this - öåëåâîé îáúåêò
+ * ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° ÑÐ¾ÑÑ‚Ð¾ÑÐ½Ð¸Ñ Ð¾ÐºÐ½Ð°
+ * 	EditWindow* this - Ñ†ÐµÐ»ÐµÐ²Ð¾Ð¹ Ð¾Ð±ÑŠÐµÐºÑ‚
  */
 bool EditWindow_isRuning(EditWindow* this){
 	return this->inProgress;
