@@ -183,6 +183,7 @@ void Value_incDecInt(Value* this, enum ValueAct act){
 		temp =  max;
 	}
 
+	//Êîñÿ÷¸ê
 	*(int* )this->vl = temp;
 }
 
