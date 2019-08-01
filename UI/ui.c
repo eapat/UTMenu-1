@@ -122,16 +122,16 @@ void UI_handler(void){
 	}
 
 	Canvas_drawFrame(&canvas,&layout,FRAME_TRANSPARENT);
-	n1Flag=Canvas_drawDynamicString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawDynamicString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawDynamicString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawDynamicString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawDynamicString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawDynamicString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawDynamicString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawDynamicString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawDynamicString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawDynamicString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
+	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
+	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
+	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
+	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
+	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
+	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
+	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
+	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
+	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
+	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
 
 
 

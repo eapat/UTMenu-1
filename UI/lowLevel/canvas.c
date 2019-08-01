@@ -217,7 +217,7 @@ void Canvas_drawString(Canvas* canvas, uint8_t x, uint8_t y, char *s,Font* font)
  * n-номер символа с которого выводить
  * возвращает true,если строка влезла в layout
  */
-bool Canvas_drawDynamicString(Canvas* canvas,Layout* layout,Font* font,char* s,enum Layout_align align,uint8_t n){
+bool Canvas_drawAlignedString(Canvas* canvas,Layout* layout,Font* font,char* s,enum Layout_align align,uint8_t n){
 
 	uint8_t strLenght=strlen(s);
 	if(layout->height<font->height || n>strLenght)

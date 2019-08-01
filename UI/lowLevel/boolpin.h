@@ -5,7 +5,7 @@
 #ifndef __BOOLPIN_H
 #define __BOOLPIN_H
 
-//Стандартные параметры для кнопок
+//Стандартные параметры для кнопок 1
 #define BTN_DEBOUNCE_MS 10
 #define BTN_LONG_DELAY_MS 1000
 #define BTN_LONG_PERIOD_MS 300

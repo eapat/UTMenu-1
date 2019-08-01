@@ -83,7 +83,7 @@ void Canvas_drawString(Canvas* canvas, uint8_t x, uint8_t y, char *s,Font* font)
 void Canvas_drawLineH(Canvas* canvas, uint8_t x, uint8_t y, uint8_t len);
 void Canvas_drawLineV(Canvas* canvas, uint8_t x, uint8_t y, uint8_t len);
 void Canvas_drawFrame(Canvas* canvas, Layout* layout,enum Frame_style style);
-bool Canvas_drawDynamicString(Canvas* canvas,Layout* layout,Font* font,char* s,enum Layout_align align,uint8_t n);
+bool Canvas_drawAlignedString(Canvas* canvas,Layout* layout,Font* font,char* s,enum Layout_align align,uint8_t n);
 
 
 #endif
