@@ -2,9 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-
-
-
+/*
+ * Инициализация холста
+ */
 void Canvas_init(Canvas* canvas,uint8_t width, uint8_t height) {
 	canvas->width = width;
 	canvas->height = height;
@@ -15,7 +15,9 @@ void Canvas_init(Canvas* canvas,uint8_t width, uint8_t height) {
 	Canvas_setStyle(canvas,FRAME_TRANSPARENT);
 }
 
-
+/*
+ * Деструктор холста (освобождает bitmap)
+ */
 void Canvas_destroy(Canvas* canvas) {
 	if (canvas->bitmap != NULL) {
 		free(canvas->bitmap);
@@ -23,6 +25,9 @@ void Canvas_destroy(Canvas* canvas) {
 	}
 }
 
+/*
+ * Очистка холста (заполняет bitmap нулями)
+ */
 void Canvas_clear(Canvas* canvas) {
 	uint8_t rows = canvas->height / 8;
 	if (canvas->height % 8 > 0) rows++;
@@ -33,29 +38,31 @@ void Canvas_clear(Canvas* canvas) {
 	}
 }
 
-void Canvas_calculateLayout(Layout* layout,Canvas* canvas,enum Layout_type type){
+
+/*
+ * Пересчёт контейнера для его расположения с заданным параметром
+ * Layout* layout-указатель на контейнер
+ * enum Layout_type type=LAYOUT_CUSTOM, LAYOUT_FILL, LAYOUT_CENTER
+ */
+void Canvas_calculateLayout(Canvas* canvas,Layout* layout,enum Layout_type type){
 
 	uint8_t x=layout->x;
 	uint8_t y=layout->y;
 	uint8_t w=layout->width;
 	uint8_t h=layout->height;
 
-
-	//������������ ���������
 	if(type==LAYOUT_CUSTOM){
 		layout->x=x<canvas->width-1?x:0;
 		layout->y=y<canvas->height-1?y:0;
 		layout->width=(layout->x+w<=canvas->width)?w:(canvas->width-x);
 		layout->height=(layout->y+h<=canvas->height)?h:(canvas->height-y);
 	}
-	//���������� ������
 	else if(type==LAYOUT_FILL){
 		layout->x=0;
 		layout->y=0;
 		layout->width=canvas->width;
 		layout->height=canvas->height;
 	}
-	//����� ������
 	else if(type==LAYOUT_CENTER){
 		if(w>canvas->width)
 			w=canvas->width;
@@ -69,6 +76,12 @@ void Canvas_calculateLayout(Layout* layout,Canvas* canvas,enum Layout_type type)
 	}
 }
 
+/*
+ * Отрисовка пикселя на холсте
+ * uint8_t x-координата Х
+ * uint8_t y-координата У
+ * uint8_t color-цвет (1-зажечь)
+ */
 void Canvas_drawPixel(Canvas* canvas, uint8_t x, uint8_t y, uint8_t color) {
 	if ((x < canvas->width) & (y < canvas->height)) {
 		if (color) canvas->bitmap[(y / 8)*canvas->width + x] |= 1 << y % 8;
@@ -76,6 +89,12 @@ void Canvas_drawPixel(Canvas* canvas, uint8_t x, uint8_t y, uint8_t color) {
 	}
 }
 
+/*
+ * Отрисовка горизонтальной линии
+ * uint8_t x-координата Х
+ * uint8_t y-координата У
+ * uint8_t len-длина линии
+ */
 void Canvas_drawLineH(Canvas* canvas, uint8_t x, uint8_t y, uint8_t len) {
 	for (uint8_t w = 0; w < canvas->pen.width; w++) {
 		for (uint8_t i = x; i < x + len; i++) {
@@ -88,6 +107,12 @@ void Canvas_drawLineH(Canvas* canvas, uint8_t x, uint8_t y, uint8_t len) {
 	}
 }
 
+/*
+ * Отрисовка вертикальной линии
+ * uint8_t x-координата Х
+ * uint8_t y-координата У
+ * uint8_t len-длина линии
+ */
 void Canvas_drawLineV(Canvas* canvas, uint8_t x, uint8_t y, uint8_t len) {
 	for (uint8_t w = 0; w < canvas->pen.width; w++) {
 		for (uint8_t i = y; i < y + len; i++) {
@@ -97,6 +122,10 @@ void Canvas_drawLineV(Canvas* canvas, uint8_t x, uint8_t y, uint8_t len) {
 	}
 }
 
+/*
+ * Установка стиля
+ * enum Frame_style style=FRAME_TRANSPARENT,FRAME_BLACK,FRAME_WHITE
+ */
 void Canvas_setStyle(Canvas* canvas,enum Frame_style style){
 
 	canvas->pen.color=1;
@@ -117,7 +146,11 @@ void Canvas_setStyle(Canvas* canvas,enum Frame_style style){
 	}
 }
 
-
+/*
+ * Отрисовка рамки
+ * Layout* layout-контейнер по которому рисуется рамка
+ * enum Frame_style style=FRAME_TRANSPARENT,FRAME_BLACK,FRAME_WHITE
+ */
 void Canvas_drawFrame(Canvas* canvas, Layout* layout,enum Frame_style style) {
 
 	Canvas_setStyle(canvas,style);
@@ -127,9 +160,8 @@ void Canvas_drawFrame(Canvas* canvas, Layout* layout,enum Frame_style style) {
 	uint8_t y2=layout->y+layout->height-1;
 	uint8_t penWidth=canvas->pen.width;
 
-	if ((x1 >= 0)&(x2 < canvas->width)&(y1 >= 0)&(y2 < canvas->height)&(x2 > x1)&(y2 > y1)) {
+	if ((x2 < canvas->width)&&(y2 < canvas->height)&&(x2 > x1)&&(y2 > y1)) {
 			// fill area
-
 			if(canvas->brush.style!=BS_CLEAR)
 			for (uint8_t x = x1+penWidth; x <= x2-penWidth; x++) {
 				for (uint8_t y = y1+penWidth; y <= y2-penWidth; y++) {
@@ -144,7 +176,6 @@ void Canvas_drawFrame(Canvas* canvas, Layout* layout,enum Frame_style style) {
 				}
 			}
 
-
 			// draw borders
 			Canvas_drawLineH(canvas, x1, y1, x2 - x1+1);
 			Canvas_drawLineH(canvas, x1, y2-penWidth+1, x2 - x1+1);
@@ -154,7 +185,12 @@ void Canvas_drawFrame(Canvas* canvas, Layout* layout,enum Frame_style style) {
 }
 
 
-
+/*
+ * Отрисовка символа
+ * uint8_t* x-указатель на координату Х (будет инкреметирована после отрисовки)
+ * char c-символ
+ * Font* font-указатель на шрифт
+ */
 void Canvas_drawChar(Canvas* canvas, uint8_t* x, uint8_t y, char c,Font* font) {
 	uint8_t width = Font_getWidth(font, c);
 	uint8_t bs = font->height / 8;
@@ -202,7 +238,13 @@ void Canvas_drawChar(Canvas* canvas, uint8_t* x, uint8_t y, char c,Font* font) {
 	*x += width + 1 + font->spacing;
 }
 
-
+/*
+ * Отрисовка строки
+ * uint8_t x-координата Х
+ * uint8_t y-координата У
+ * char *s-указатель на строку
+ * Font* font-указатель на шрифт
+ */
 void Canvas_drawString(Canvas* canvas, uint8_t x, uint8_t y, char *s,Font* font) {
 	uint8_t i = x;
 	while(*s != 0) {
@@ -212,12 +254,18 @@ void Canvas_drawString(Canvas* canvas, uint8_t x, uint8_t y, char *s,Font* font)
 }
 
 /*
- * ��������� ������ ������ layout
- * align-������������
- * n-����� ������� � �������� ��������
- * ���������� true,���� ������ ������ � layout
+ * Отрисовка строки с выравниванием
+ * Layout* layout-контейнер в котором надо отрисовать
+ * Font* font-указатель на шрифт
+ * char* s-указатель на строку
+ * enum String_align align =ALIGN_LEFT,ALIGN_CENTER,ALIGN_RIGHT
+ * uint8_t n-номер символа с которого начианется отрисовка
+ *
+ * return true-если строка поместилась в контейнере
+ *
+ * Если возникает ошибка, то контейнер заливается
  */
-bool Canvas_drawAlignedString(Canvas* canvas,Layout* layout,Font* font,char* s,enum Layout_align align,uint8_t n){
+bool Canvas_drawAlignedString(Canvas* canvas,Layout* layout,char* s,Font* font,enum String_align align,uint8_t n){
 
 	uint8_t strLenght=strlen(s);
 	if(layout->height<font->height || n>strLenght)
@@ -228,16 +276,10 @@ bool Canvas_drawAlignedString(Canvas* canvas,Layout* layout,Font* font,char* s,e
 		return false;
 	}
 
-	//���������� �������� � �� �����, ������� ����� �������
-	uint8_t sNum=0;
-	uint8_t sWidth=0;
+	uint8_t sNum=0;//количество символом, которое сможем вывести
+	uint8_t sWidth=0;//длина строки, которую сможем вывести
 	uint8_t tempWidth=0;
 
-
-	if(canvas->s!=s)
-		canvas->s=s;
-
-	//���� �� ���� ������� ������ c n
 	for(int i=n;i<(strLenght);i++)
 	{
 		tempWidth+=Font_getWidth(font, *(s+i))+1+font->spacing;
@@ -252,9 +294,7 @@ bool Canvas_drawAlignedString(Canvas* canvas,Layout* layout,Font* font,char* s,e
 
 	uint8_t x=0;
 
-
-
-	//������� ������ �� ������������
+	//Считаем координату Х исходя из выравнивания
 	if(align==ALIGN_LEFT)
 		 x = layout->x;
 	else if(align==ALIGN_CENTER)
@@ -262,6 +302,7 @@ bool Canvas_drawAlignedString(Canvas* canvas,Layout* layout,Font* font,char* s,e
 	else if(align==ALIGN_RIGHT)
 		 x=layout->x+layout->width-1-sWidth;
 
+	//Координата У по центру контейнера
 	uint8_t y=layout->y+(layout->height-font->height)/2;
 
 	for(int i=n;i<n+sNum;i++)
@@ -273,9 +314,6 @@ bool Canvas_drawAlignedString(Canvas* canvas,Layout* layout,Font* font,char* s,e
 		return true;
 	else
 		return false;
-
-	return false;
-
 }
 
 

@@ -24,16 +24,17 @@ void Boolpin_init(Boolpin* boolpin,GPIO_TypeDef* port,uint16_t pin,uint16_t debo
 }
 
 /*
- *	Обновление состояния структуры
+ * Обновление состояния структуры
  *
  *	возвращает true, если возникло событие и сбрасывает его
+ *	uint32_t time-системно время в мс
  */
-bool Boolpin_update(Boolpin* boolpin) {
+bool Boolpin_update(Boolpin* boolpin,uint32_t time) {
 
     bool ps=HAL_GPIO_ReadPin(boolpin->port,boolpin->pin);
   
     if ((!boolpin->flag)&&(!ps)) {
-    	boolpin->start = HAL_GetTick();
+    	boolpin->start = time;
     	boolpin->flag = true;
     }
     else if ((boolpin->flag)&&(ps)) {
@@ -42,16 +43,16 @@ bool Boolpin_update(Boolpin* boolpin) {
     	boolpin->currentPeriod_ms=boolpin->defaultPeriod_ms;
     }
     
-    else if ((boolpin->state==false) && (boolpin->flag)&&((HAL_GetTick()-boolpin->start)>boolpin->debounce_ms)) {
+    else if ((boolpin->state==false) && (boolpin->flag)&&((time-boolpin->start)>boolpin->debounce_ms)) {
     	boolpin->event = true;
     	boolpin->state = true;
     }
     else if(boolpin->autoClick && boolpin->state && !boolpin->flagLong){
     	boolpin->flagLong=true;
-    	boolpin->start=HAL_GetTick();
+    	boolpin->start=time;
     }
     
-    else if (boolpin->state && (boolpin->flagLong)&&((HAL_GetTick()-boolpin->start)>boolpin->delay_ms)) {
+    else if (boolpin->state && (boolpin->flagLong)&&((time-boolpin->start)>boolpin->delay_ms)) {
     	boolpin->event=true;
     	boolpin->start=boolpin->start+boolpin->currentPeriod_ms;
 

@@ -498,6 +498,13 @@ uint8_t AnsiToIndex(uint8_t ansi_code) {
 	return index;
 }
 
+/*
+ * Инициализация шрифта
+ * uint8_t font_type - шаблон FONT_5x8, FONT_8x12B, FONT_8x12S
+ * uint8_t spacing -  F_SPACING_0, F_SPACING_1, F_SPACING_2 (расстояние между символами)
+ * uint8_t inversion - FS_NORMAL, FS_INVERT (инверсия цветов)
+ * uint8_t transparent - BG_TRANS, BG_FILL (прозрачность фона)
+ */
 void Font_init(Font* font,uint8_t font_type, uint8_t spacing, uint8_t inversion, uint8_t transparent) {
 	font->type = font_type;
 	if (font->type == FONT_5x8) {
@@ -518,6 +525,10 @@ void Font_init(Font* font,uint8_t font_type, uint8_t spacing, uint8_t inversion,
 	font->inversion = inversion;
 }
 
+/*
+ * Получение длины символа
+ * uint8_t ansi_code - ANSI код символа
+ */
 uint8_t Font_getWidth(Font* font, uint8_t ansi_code) {
 	uint8_t n = AnsiToIndex(ansi_code);
 	uint8_t width = 0;

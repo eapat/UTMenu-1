@@ -1,3 +1,4 @@
+/* Файл реализует функции стэка из MenuItem* */
 #include "stack.h"
 
 void Stack_push(Stack* stack,MenuItem* menuItem){

@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 
+//Структура для хранения параметров шрифта
 typedef struct {
 	uint8_t type;
 	uint8_t width;
