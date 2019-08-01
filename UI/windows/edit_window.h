@@ -6,32 +6,32 @@
 #include "value.h"
 
 typedef struct {
-	uint32_t prevTime;
-	uint8_t shiftFlag;
-	uint8_t shift;
+	uint32_t prevTime; //время предыдощего прохода
+	uint8_t shiftFlag; //флаг необходимости сдвига
+	uint8_t shift;	   //количество сдвигаемых символов
 }EWShiftString;
 
 typedef struct {
-	Font* font;
-	Layout layout;
-	enum Frame_style style;
+	Font* font;				//Шрифт в данной области
+	Layout layout;			//Размеры и координаты области
+	enum Frame_style style; //Стиль области
 }EWArea;
 
 
 typedef struct {
-	Canvas* canvas;
-	Layout mainLayout;
-	EWArea header;
-	EWArea body;
-	bool inProgress;
-	Value* vlPt;
-	Value vlCopy;
-	float vlLocal;
-	char* headerText;
-	EWShiftString shStr;
+	Canvas* canvas;			//canvas с которым работаем
+	Layout mainLayout;		//Размеры и координаты окна
+	EWArea header;			//Заголовочная область
+	EWArea body;			//Область со значением
+	bool inProgress;		//Флаг работы
+	Value* vlPt;			//Указатель на "оригинальное" значение
+	Value vlCopy;			//Копия значения
+	float vlLocal;			//Переменная для хранения копии
+	char* headerText;		// Текст заголовка
+	EWShiftString shStr;	// Парамеры сдвига бегущей строки
 }EditWindow;
 
-void EditWindow_init(EditWindow* this,Canvas* canvas,Font* headerFont, Font* bodyFont, Layout layout);
+void EditWindow_init(EditWindow* this,Canvas* canvas,Layout layout, Font* headerFont, Font* bodyFont);
 void EditWindow_start(EditWindow* this, Value* val, char* header);
 void EditWindow_stop(EditWindow* this);
 void EditWindow_draw(EditWindow* this, uint32_t currentTime);

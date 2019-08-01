@@ -4,7 +4,16 @@
 #define EW_SHIFT_TIME 300
 #define EW_SHIFT_PAUSE 1000
 
-void EditWindow_init(EditWindow* this,Canvas* canvas,Font* headerFont, Font* bodyFont, Layout layout){
+/*
+ * Инициализация окна редактирования
+ * 	EditWindow* this - целевой объект
+ *	Canvas* canvas - канвас с которым работаем
+ *	Font* headerFont - шрифт заголовка
+ *	Font* bodyFont - шрифт отрисовки значения
+ *	Layout layout - область в которой должно быть отрисовано окно
+ */
+
+void EditWindow_init(EditWindow* this,Canvas* canvas,Layout layout, Font* headerFont, Font* bodyFont){
 	this->canvas = canvas;
 	this->header.font = headerFont;
 	this->body.font = bodyFont;
@@ -32,6 +41,14 @@ void EditWindow_init(EditWindow* this,Canvas* canvas,Font* headerFont, Font* bod
 
 }
 
+
+/*
+ * Запуск окна редактирования
+ * 	EditWindow* this - целевой объект
+ *	Value* val - редактируемое значение
+ *	char* header - текст заголовка
+ */
+
 void EditWindow_start(EditWindow* this, Value* val, char* header){
 	this->vlPt = val;
 	Value_copy(this->vlPt,&this->vlCopy);
@@ -43,6 +60,12 @@ void EditWindow_start(EditWindow* this, Value* val, char* header){
 	this->headerText = header;
 }
 
+
+/*
+ * Отрисовка окна редактирования
+ * 	EditWindow* this - целевой объект
+ *	uint32_t currentTime - текущее время в ms
+ */
 
 void EditWindow_draw(EditWindow* this, uint32_t currentTime){
 	if (this->inProgress){
@@ -60,9 +83,20 @@ void EditWindow_draw(EditWindow* this, uint32_t currentTime){
 
 }
 
+
+/*
+ * Остановка окна редактирования
+ * 	EditWindow* this - целевой объект
+ */
+
 void EditWindow_stop(EditWindow* this){
 	this->inProgress = false;
 }
+
+/*
+ * Инкрементирование значения в окне
+ * 	EditWindow* this - целевой объект
+ */
 
 void EditWindow_inc(EditWindow* this){
 	if (this->inProgress){
@@ -70,12 +104,21 @@ void EditWindow_inc(EditWindow* this){
 	}
 }
 
+/*
+ * Декрементирование значения в окне
+ * 	EditWindow* this - целевой объект
+ */
+
 void EditWindow_dec(EditWindow* this){
 	if (this->inProgress){
 		Value_dec(&this->vlCopy);
 	}
 }
 
+/*
+ * Выход из окна с созранением изменений
+ * 	EditWindow* this - целевой объект
+ */
 void EditWindow_enter(EditWindow* this){
 	if (this->inProgress){
 		switch (this->vlPt->type){
@@ -96,10 +139,19 @@ void EditWindow_enter(EditWindow* this){
 	}
 }
 
+/*
+ * Выход из окна без сохранения изменений
+ * 	EditWindow* this - целевой объект
+ */
+
 void EditWindow_back(EditWindow* this){
 	EditWindow_stop(this);
 }
 
+/*
+ * Проверка состояния окна
+ * 	EditWindow* this - целевой объект
+ */
 bool EditWindow_isRuning(EditWindow* this){
 	return this->inProgress;
 }
