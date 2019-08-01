@@ -77,8 +77,8 @@ void EditWindow_draw(EditWindow* this, uint32_t currentTime){
 		Canvas_drawFrame(this->canvas, &this->mainLayout, FRAME_WHITE);
 		Canvas_drawFrame(this->canvas, &this->body.layout, this->body.style);
 		Canvas_drawFrame(this->canvas, &this->header.layout, this->header.style);
-		this->shStr.shiftFlag = Canvas_drawAlignedString(this->canvas,&this->header.layout,this->header.font,this->headerText,ALIGN_CENTER,this->shStr.shift);
-		Canvas_drawAlignedString(this->canvas,&this->body.layout,this->body.font,Value_toString(&this->vlCopy),ALIGN_CENTER,0);
+		this->shStr.shiftFlag = Canvas_drawAlignedString(this->canvas,&this->header.layout,this->headerText,this->header.font,ALIGN_CENTER,this->shStr.shift);
+		Canvas_drawAlignedString(this->canvas,&this->body.layout,Value_toString(&this->vlCopy),this->body.font,ALIGN_CENTER,0);
 	}
 
 }

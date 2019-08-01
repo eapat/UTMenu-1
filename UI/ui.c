@@ -4,7 +4,7 @@
 #include "boolpin.h"
 #include "menu.h"
 #include "menu_window.h"
-#include "value.h"
+#include "edit_window.h"
 
 Canvas canvas;
 Canvas canvas2;
@@ -21,9 +21,12 @@ Boolpin btnBack;
 Boolpin btnFunc;
 
 MenuWindow menuWindow;
+EditWindow editWindow;
 
-Value value;
-char * units []={"Вкл.","Откл.","C","BUS"};
+bool testBool;
+int testInt;
+float testFloat;
+int testEnum;
 
 Layout layout={0,0,20,60};
 
@@ -46,11 +49,17 @@ void UI_init(void){
 	//Value_initAsInt(&value,&fval,units,-20,5);
 
 	LCD_init();
+	Menu_init();
 
 	Layout layout={0,0,70,50};
 
-	Canvas_calculateLayout(&canvas,&layout,LAYOUT_CENTER);
+	Canvas_calculateLayout(&canvas,&layout,LAYOUT_FILL);
 	MenuWindow_init(&menuWindow,&canvas,layout,&fontTitleIverted,&fontRegular);
+
+	Layout layout2={0,0,60,40};
+	Canvas_calculateLayout(&canvas,&layout2,LAYOUT_CENTER);
+	EditWindow_init(&editWindow,&canvas,layout2,&fontTitleIverted,&fontRegular);
+
 	MenuWindow_setRootItem(&menuWindow,&rootItem);
 }
 
@@ -70,12 +79,18 @@ void UI_handler(void){
 
 	if(Boolpin_update(&btnFunc,time)){
 		MenuItem* item=MenuWindow_enter(&menuWindow);
+		if(item!=&Null_Menu)
+		{
+			EditWindow_start(&editWindow,item->value,item->text);
+		}
 	}
 
 	if(Boolpin_update(&btnBack,time))
 			MenuWindow_back(&menuWindow);
 
 	MenuWindow_draw(&menuWindow,time);
+	if(EditWindow_isRuning(&editWindow))
+		EditWindow_draw(&editWindow,time);
 	LCD_draw(&canvas);
 
 
