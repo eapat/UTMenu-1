@@ -26,6 +26,7 @@ typedef struct {
 	bool inProgress;
 	Value* vlPt;
 	Value vlCopy;
+	float vlLocal;
 	char* headerText;
 	EWShiftString shStr;
 }EditWindow;
