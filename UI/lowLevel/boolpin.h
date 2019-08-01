@@ -5,12 +5,12 @@
 #ifndef __BOOLPIN_H
 #define __BOOLPIN_H
 
-//Стандартные параметры для кнопок 1
+//РЎС‚Р°РЅРґР°СЂС‚РЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ РґР»СЏ РєРЅРѕРїРѕРє 1
 #define BTN_DEBOUNCE_MS 10
 #define BTN_LONG_DELAY_MS 1000
 #define BTN_LONG_PERIOD_MS 300
 
-//Определения кнопок для измерителя мощности
+//РћРїСЂРµРґРµР»РµРЅРёСЏ РєРЅРѕРїРѕРє РґР»СЏ РёР·РјРµСЂРёС‚РµР»СЏ РјРѕС‰РЅРѕСЃС‚Рё
 #define BTN_PREV_PORT    GPIOA
 #define BTN_PREV_PIN     GPIO_PIN_12
 
@@ -24,20 +24,19 @@
 #define BTN_FUNC_PIN     GPIO_PIN_9
 
 typedef struct {
-    bool event;     // событие кнопки
-    GPIO_TypeDef* port;
-    uint16_t      pin;
-    uint16_t debounce_ms;//антидребезг
-    uint16_t delay_ms;//задержка перед началом автоповтора (если 0, то автоповтор отключен)
-    uint16_t defaultPeriod_ms;//период автоповтора по умолчанию
+	bool event;     // СЃРѕР±С‹С‚РёРµ РєРЅРѕРїРєРё
+	GPIO_TypeDef* port;
+	uint16_t      pin;
+	uint16_t debounce_ms;//Р°РЅС‚РёРґСЂРµР±РµР·Рі
+	uint16_t delay_ms;//Р·Р°РґРµСЂР¶РєР° РїРµСЂРµРґ РЅР°С‡Р°Р»РѕРј Р°РІС‚РѕРїРѕРІС‚РѕСЂР° (РµСЃР»Рё 0, С‚Рѕ Р°РІС‚РѕРїРѕРІС‚РѕСЂ РѕС‚РєР»СЋС‡РµРЅ)
+	uint16_t defaultPeriod_ms;//РїРµСЂРёРѕРґ Р°РІС‚РѕРїРѕРІС‚РѕСЂР° РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ
 
-    uint16_t currentPeriod_ms;//Текущий период автоповтора
-    bool autoClick; // автоповтор
-    bool state;     // текущее состояние
-    bool flag;      //
-    uint32_t start; //
-    bool flagLong;  //
-    
+	uint16_t currentPeriod_ms;//РўРµРєСѓС‰РёР№ РїРµСЂРёРѕРґ Р°РІС‚РѕРїРѕРІС‚РѕСЂР°
+	bool autoClick; // Р°РІС‚РѕРїРѕРІС‚РѕСЂ
+	bool state;     // С‚РµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ
+	bool flag;      //
+	uint32_t start; //
+	bool flagLong;  //
 }Boolpin;
 
 void Boolpin_init(Boolpin* boolpin,GPIO_TypeDef* port,uint16_t pin,uint16_t debounce_ms,uint16_t delay_ms,uint16_t period_ms);

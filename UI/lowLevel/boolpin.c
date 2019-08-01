@@ -24,7 +24,7 @@ void Boolpin_init(Boolpin* boolpin,GPIO_TypeDef* port,uint16_t pin,uint16_t debo
 }
 
 /*
- *	Обновление состояния структуры
+ * Обновление состояния структуры
  *
  *	возвращает true, если возникло событие и сбрасывает его
  */

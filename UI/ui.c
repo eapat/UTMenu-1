@@ -57,7 +57,7 @@ void UI_init(void){
 
 	Layout layout={0,0,70,40};
 
-	Canvas_calculateLayout(&layout,&canvas,LAYOUT_FILL);
+	Canvas_calculateLayout(&canvas,&layout,LAYOUT_FILL);
 	MenuWindow_init(&menuWindow,&canvas,&fontBold,layout);
 	MenuWindow_setMenuList(&menuWindow,&rootItem);
 }
@@ -122,16 +122,7 @@ void UI_handler(void){
 	}
 
 	Canvas_drawFrame(&canvas,&layout,FRAME_TRANSPARENT);
-	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
-	n1Flag=Canvas_drawAlignedString(&canvas,&layout,&fontBold,"Учтех-Профи",ALIGN_CENTER,n1);
+	n1Flag=Canvas_drawAlignedString(&canvas,&layout,"Учтех-Профи",&fontBold,ALIGN_CENTER,n1);
 
 
 
