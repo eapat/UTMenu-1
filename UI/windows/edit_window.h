@@ -7,13 +7,18 @@
 
 typedef struct {
 	Canvas* canvas;
-	Font* font;
-	Layout layout;
+	Font* headerFont;
+	Font* bodyFont;
+	Layout mainLayout;
+	Layout headerLayout;
+	Layout bodyLayout;
+	enum Frame_style headerStyle;
+	enum Frame_style bodyStyle;
 	bool inProgress;
 	Value* val;
 }EditWindow;
 
-void EditWindow_init(EditWindow* this,Canvas* canvas,Font* font,Layout layout);
+void EditWindow_init(EditWindow* this,Canvas* canvas,Font* headerFont, Font* bodyFont, Layout layout);
 void EditWindow_start(EditWindow* this, Value* val);
 void EditWindow_draw(EditWindow* this);
 void EditWindow_inc(EditWindow* this);
