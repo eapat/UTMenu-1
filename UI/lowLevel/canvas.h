@@ -2,6 +2,7 @@
 #define __CANVAS_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "fonts.h"
 
 #define CL_BLACK 0
@@ -40,10 +41,10 @@ typedef struct {
 
 enum Layout_type{LAYOUT_CUSTOM,LAYOUT_FILL,LAYOUT_CENTER};
 enum Layout_align{ALIGN_LEFT,ALIGN_CENTER,ALIGN_RIGHT};
+enum Frame_style{FRAME_TRANSPARENT,FRAME_BLACK,FRAME_WHITE};
 
 //Структура для хранения параметров контейнра
 typedef struct {
-	enum Layout_type type;
 	uint8_t x;
 	uint8_t y;
 	uint8_t width;
@@ -60,18 +61,29 @@ typedef struct {
 	uint8_t  update;
 	char strBuff[20];
 
+
+	//bool update;//Флаг обновления строки
+	char* s;//Указатель на строку которую двигаем
+	uint8_t sCounter;//Счётчик символов строки
+
 	Pen      pen;
 	Brush    brush;
 } Canvas;
 
 
-void Layout_Init(Layout* layout,Canvas* canvas,Layout* sourceLayout);
+
 
 void Canvas_init(Canvas* canvas,uint8_t width, uint8_t height);
 void Canvas_destroy(Canvas* canvas);
 void Canvas_clear(Canvas* canvas);
+void Canvas_setStyle(Canvas* canvas,enum Frame_style style);
+void Canvas_calculateLayout(Layout* layout,Canvas* canvas,enum Layout_type type);
 void Canvas_drawPixel(Canvas* canvas, uint8_t x, uint8_t y, uint8_t color);
 void Canvas_drawString(Canvas* canvas, uint8_t x, uint8_t y, char *s,Font* font);
+void Canvas_drawLineH(Canvas* canvas, uint8_t x, uint8_t y, uint8_t len);
+void Canvas_drawLineV(Canvas* canvas, uint8_t x, uint8_t y, uint8_t len);
+void Canvas_drawFrame(Canvas* canvas, Layout* layout,enum Frame_style style);
+bool Canvas_drawDynamicString(Canvas* canvas,Layout* layout,Font* font,char* s,enum Layout_align align,uint8_t n);
 
 
 #endif
