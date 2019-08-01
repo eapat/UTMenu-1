@@ -15,11 +15,14 @@ typedef struct {
 	enum Frame_style headerStyle;
 	enum Frame_style bodyStyle;
 	bool inProgress;
-	Value* val;
+	Value* vlPt;
+	Value vlCopy;
+	char* headerText;
 }EditWindow;
 
 void EditWindow_init(EditWindow* this,Canvas* canvas,Font* headerFont, Font* bodyFont, Layout layout);
-void EditWindow_start(EditWindow* this, Value* val);
+void EditWindow_start(EditWindow* this, Value* val, char* header);
+void EditWindow_stop(EditWindow* this);
 void EditWindow_draw(EditWindow* this);
 void EditWindow_inc(EditWindow* this);
 void EditWindow_dec(EditWindow* this);
