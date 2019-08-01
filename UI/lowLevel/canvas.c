@@ -160,7 +160,7 @@ void Canvas_drawFrame(Canvas* canvas, Layout* layout,enum Frame_style style) {
 	uint8_t y2=layout->y+layout->height-1;
 	uint8_t penWidth=canvas->pen.width;
 
-	if ((x1 >= 0)&(x2 < canvas->width)&(y1 >= 0)&(y2 < canvas->height)&(x2 > x1)&(y2 > y1)) {
+	if ((x2 < canvas->width)&&(y2 < canvas->height)&&(x2 > x1)&&(y2 > y1)) {
 			// fill area
 			if(canvas->brush.style!=BS_CLEAR)
 			for (uint8_t x = x1+penWidth; x <= x2-penWidth; x++) {

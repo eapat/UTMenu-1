@@ -4,6 +4,7 @@
 #include "stm32f4xx_hal.h"
 #include "canvas.h"
 
+//Сопряжение дисплея и МК
 #define LCD_DB0_PORT    GPIOC
 #define LCD_DB0_PIN     GPIO_PIN_9
 

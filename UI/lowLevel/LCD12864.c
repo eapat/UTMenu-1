@@ -1,6 +1,8 @@
 #include "LCD12864.h"
 
-//��������� ������ ����� � ���������
+/*
+ * Процедара отправки байта в индикатор
+ */
 void LCDWriteByte(uint8_t data, uint8_t cd) {
 	if (cd == 1) HAL_GPIO_WritePin(LCD_A0_PORT, LCD_A0_PIN, GPIO_PIN_SET);
 	else HAL_GPIO_WritePin(LCD_A0_PORT, LCD_A0_PIN, GPIO_PIN_RESET);
@@ -40,14 +42,23 @@ void LCDWriteByte(uint8_t data, uint8_t cd) {
 	HAL_GPIO_WritePin(LCD_E1_PORT, LCD_E1_PIN, GPIO_PIN_RESET);
 }
 
+/*
+ * Процедура записи одного байта данных
+ */
 void LCD_WriteData(uint8_t data) {
     LCDWriteByte(data, 1);
 }
 
+/*
+ * Процедура записи одного байта команды
+ */
 void LCD_WriteComand(uint8_t data) {
   LCDWriteByte(data, 0);
 }
 
+/*
+ * Инициализация дисплея
+ */
 void LCD_init() {
 	HAL_GPIO_WritePin(LCD_DB0_PORT,LCD_DB0_PIN,GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(LCD_DB1_PORT,LCD_DB1_PIN,GPIO_PIN_RESET);
@@ -99,6 +110,9 @@ void LCD_init() {
 		LCD_WriteComand(cmd[i]);
 }
 
+/*
+ * Сброс дисплея
+ */
 void LCD_reset(void) {
 	uint8_t cmd[] = {
 		0x00,				// set low column address
@@ -111,6 +125,9 @@ void LCD_reset(void) {
 		LCD_WriteComand(cmd[i]);
 }
 
+/*
+ * Отрисовка холста
+ */
 void LCD_draw(Canvas* canvas) {
 	if (canvas->bitmap != NULL) {
 		uint8_t rows = canvas->height / 8;

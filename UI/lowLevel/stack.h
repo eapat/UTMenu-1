@@ -4,6 +4,7 @@
 
 #define STACK_MAX_SIZE 20
 
+//Структура для реализации стэка из MenuItem
 typedef struct{
 	MenuItem*data[STACK_MAX_SIZE];
 	int pos;
