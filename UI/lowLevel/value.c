@@ -27,7 +27,7 @@ void Value_incDecInt(Value* this, enum ValueAct act);
 
 
 
-int Value_initAsInt(Value* this, int* value, char** units, float max, float min){
+int Value_initAsInt(Value* this, int* value, char** units,  float min, float max){
 	if (max<min) {
 		while (1){}
 	}
@@ -41,7 +41,7 @@ int Value_initAsInt(Value* this, int* value, char** units, float max, float min)
 
 }
 
-int Value_initAsFloat(Value* this, float* value, char** units, float max, float min, uint8_t digitsAfterDot){
+int Value_initAsFloat(Value* this, float* value, char** units, float min, float max, uint8_t digitsAfterDot){
 	if (max<min) {
 		while (1){}
 	}
@@ -226,6 +226,17 @@ void Value_incDecEnumAndBool(Value* this, enum ValueAct act){
 	}
 
 	*(uint8_t* )this->vl = temp;
+}
+
+
+
+void Value_copy(Value* source, Value* destination){
+	destination->digitsAfterDot = source->digitsAfterDot;
+	destination->max = source->max;
+	destination->min = source->min;
+	destination->type = source->type;
+	destination->units = source->units;
+	destination->vl = source->vl;
 }
 
 
