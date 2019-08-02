@@ -65,12 +65,15 @@ int Value_initAsBool(Value* this, bool* value, char** units){
 	return 0;
 }
 
-int Value_initAsEnum(Value* this, uint8_t* value, char** units,  float min){
+int Value_initAsEnum(Value* this, uint8_t* value, char** units,  float min,  float max){
+	if ((max<min)||(max<0)||(min<0)) {
+		while (1){}
+	}
 	this->vl = (void*)value;
 	this->units = units;
 	this->type = VALUE_ENUM;
 	this->min = (min <0)? 0 : roundf(min);
-	this->max = sizeof(units) + min - 1;
+	this->max = roundf(max);
 	this->digitsAfterDot = 0;
 	return 0;
 }
@@ -132,7 +135,7 @@ void Value_boolToString(Value* this){
 void Value_enumToString(Value* this){
 	uint8_t temp = *(uint8_t* )this->vl;
 
-	if(temp<this->min || temp>=this->max){
+	if(temp<this->min || temp>this->max){
 		strcpy(valStrBuf,"nan");
 	}
 	else{
@@ -218,16 +221,21 @@ void Value_incDecEnumAndBool(Value* this, enum ValueAct act){
 	int min = (int)this->min;
 	int max = (int)this->max;
 
-	if (temp < min){
-		temp =  min;
-	} else if (temp > max){
-		temp =  max;
+	if (temp > min){
+		if (act == VALUE_DEC){
+			temp = temp - delta;
+		}
+	}else{
+		temp = min;
 	}
 
-	if ((temp != max)&&(temp != min)){
-		temp = (act == VALUE_INC)? temp+delta: temp-delta;
+	if (temp < max){
+		if (act == VALUE_INC){
+			temp = temp + delta;
+		}
+	}else{
+		temp = max;
 	}
-
 
 
 	*(uint8_t* )this->vl = temp;

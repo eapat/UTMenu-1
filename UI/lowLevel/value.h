@@ -37,7 +37,7 @@ typedef struct {
 int Value_initAsInt(Value* this, int* value, char** units, float min, float max);
 int Value_initAsFloat(Value* this, float* value, char** units, float min, float max, uint8_t digitsAfterDot);
 int Value_initAsBool(Value* this, bool* value, char** units);
-int Value_initAsEnum(Value* this, uint8_t* value, char** units,  float min);
+int Value_initAsEnum(Value* this, uint8_t* value, char** units,  float min,  float max);
 char* Value_toString(Value* this);
 void Value_inc(Value* this);
 void Value_dec(Value* this);
