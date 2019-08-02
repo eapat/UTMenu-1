@@ -21,6 +21,7 @@ typedef struct {
 typedef struct {
 	Canvas* canvas;			//canvas с которым работаем
 	Layout mainLayout;		//Размеры и координаты окна
+	Layout frameLayout;		//Размеры и координаты черной рамки
 	EWArea header;			//Заголовочная область
 	EWArea body;			//Область со значением
 	bool inProgress;		//Флаг работы
