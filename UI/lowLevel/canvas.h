@@ -43,7 +43,7 @@ typedef struct {
 
 enum Layout_type{LAYOUT_CUSTOM,LAYOUT_FILL,LAYOUT_CENTER};//Тип заполнения контейнера
 enum String_align{ALIGN_LEFT,ALIGN_CENTER,ALIGN_RIGHT};//Тип выравнивания строки в контейнере
-enum Frame_style{FRAME_TRANSPARENT,FRAME_BLACK,FRAME_WHITE};//Стиль рамки
+enum Frame_style{FRAME_TRANSPARENT,FRAME_BLACK,FRAME_WHITE, FRAME_LAYOUT_MASK};//Стиль рамки
 
 //Структура для хранения параметров контейнра
 typedef struct {

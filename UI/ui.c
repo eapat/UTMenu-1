@@ -28,7 +28,6 @@ int testInt;
 float testFloat;
 int testEnum;
 
-Layout layout={0,0,20,60};
 
 //Инициализация пользовательского интерфейса
 void UI_init(void){
@@ -67,6 +66,7 @@ void UI_init(void){
 void UI_handler(void){
 	Canvas_clear(&canvas);
 
+	/*
 	uint32_t time=HAL_GetTick();
 
 	if(Boolpin_update(&btnPrev,time))
@@ -91,6 +91,12 @@ void UI_handler(void){
 	MenuWindow_draw(&menuWindow,time);
 	if(EditWindow_isRuning(&editWindow))
 		EditWindow_draw(&editWindow,time);
+		*/
+	Layout layout={0,0,128,64};
+	Layout layout2={10,10,10,10};
+
+	Canvas_drawFrame(&canvas,&layout,FRAME_WHITE);
+	Canvas_drawFrame(&canvas,&layout2,FRAME_LAYOUT_MASK);
 	LCD_draw(&canvas);
 
 
