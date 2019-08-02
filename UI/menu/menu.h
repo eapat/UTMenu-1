@@ -7,6 +7,7 @@ typedef struct{
 	void* next;
 	char* text;
 	Value* value;
+	void (*function)(void);
 }MenuItem;
 
 extern MenuItem Null_Menu;
