@@ -70,7 +70,7 @@ int Value_initAsEnum(Value* this, uint8_t* value, char** units,  float min){
 	this->units = units;
 	this->type = VALUE_ENUM;
 	this->min = (min <0)? 0 : roundf(min);
-	this->max = sizeof(units) + min;
+	this->max = sizeof(units) + min - 1;
 	this->digitsAfterDot = 0;
 	return 0;
 }
@@ -183,7 +183,7 @@ void Value_incDecInt(Value* this, enum ValueAct act){
 		temp =  max;
 	}
 
-	//Косячёк
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	*(int* )this->vl = temp;
 }
 
@@ -218,12 +218,17 @@ void Value_incDecEnumAndBool(Value* this, enum ValueAct act){
 	int min = (int)this->min;
 	int max = (int)this->max;
 
-	temp = (act == VALUE_INC)? temp+delta: temp-delta;
 	if (temp < min){
 		temp =  min;
 	} else if (temp > max){
 		temp =  max;
 	}
+
+	if ((temp != max)&&(temp != min)){
+		temp = (act == VALUE_INC)? temp+delta: temp-delta;
+	}
+
+
 
 	*(uint8_t* )this->vl = temp;
 }

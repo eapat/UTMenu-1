@@ -22,6 +22,13 @@ void EditWindow_init(EditWindow* this,Canvas* canvas,Layout layout, Font* header
 	this->mainLayout = layout;
 	this->inProgress = false;
 
+	uint8_t dx = this->mainLayout.x>0? 1 : 0;
+	uint8_t dy = this->mainLayout.y>0? 1 : 0;
+	this->frameLayout.height = this->mainLayout.height + 1 +dy;
+	this->frameLayout.width = this->mainLayout.width + 1 + dx;
+	this->frameLayout.x = this->mainLayout.x - dx;
+	this->frameLayout.y = this->mainLayout.y - dy;
+
 	this->header.layout.height = headerFont->height + headerFont->height/2;
 	this->header.layout.width = this->mainLayout.width;
 	this->header.layout.x = this->mainLayout.x;
@@ -76,6 +83,8 @@ void EditWindow_draw(EditWindow* this, uint32_t currentTime){
 			this->shStr.prevTime=currentTime;
 			this->shStr.shift=!this->shStr.shiftFlag?this->shStr.shift+1:0;
 		}
+
+		Canvas_drawFrame(this->canvas, &this->frameLayout, FRAME_LAYOUT_MASK);
 		Canvas_drawFrame(this->canvas, &this->mainLayout, FRAME_WHITE);
 		Canvas_drawFrame(this->canvas, &this->body.layout, this->body.style);
 		Canvas_drawFrame(this->canvas, &this->header.layout, this->header.style);
