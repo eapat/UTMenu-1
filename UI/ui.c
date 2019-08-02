@@ -66,37 +66,45 @@ void UI_init(void){
 void UI_handler(void){
 	Canvas_clear(&canvas);
 
-	/*
+
 	uint32_t time=HAL_GetTick();
 
 	if(Boolpin_update(&btnPrev,time))
 	{
-		MenuWindow_decPosition(&menuWindow);
+		if(EditWindow_isRuning(&editWindow))
+			EditWindow_dec(&editWindow);
+		else
+			MenuWindow_decPosition(&menuWindow);
 	}
 	if(Boolpin_update(&btnNext,time)){
-		MenuWindow_incPosition(&menuWindow);
+		if(EditWindow_isRuning(&editWindow))
+			EditWindow_inc(&editWindow);
+		else
+			MenuWindow_incPosition(&menuWindow);
 	}
 
 	if(Boolpin_update(&btnFunc,time)){
-		MenuItem* item=MenuWindow_enter(&menuWindow);
-		if(item!=&Null_Menu)
+		if(EditWindow_isRuning(&editWindow))
+			EditWindow_enter(&editWindow);
+		else
 		{
-			EditWindow_start(&editWindow,item->value,item->text);
+			MenuItem* item=MenuWindow_enter(&menuWindow);
+			if(item!=&Null_Menu && item->value!=NULL)
+				EditWindow_start(&editWindow,item->value,item->text);
 		}
 	}
 
-	if(Boolpin_update(&btnBack,time))
+	if(Boolpin_update(&btnBack,time)){
+		if(EditWindow_isRuning(&editWindow))
+			EditWindow_back(&editWindow);
+		else
 			MenuWindow_back(&menuWindow);
+	}
+
 
 	MenuWindow_draw(&menuWindow,time);
 	if(EditWindow_isRuning(&editWindow))
 		EditWindow_draw(&editWindow,time);
-		*/
-	Layout layout={0,0,128,64};
-	Layout layout2={10,10,10,10};
-
-	Canvas_drawFrame(&canvas,&layout,FRAME_WHITE);
-	Canvas_drawFrame(&canvas,&layout2,FRAME_LAYOUT_MASK);
 	LCD_draw(&canvas);
 
 
