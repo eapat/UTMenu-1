@@ -4,8 +4,14 @@
 #include "value.h"
 #include <stdio.h>
 
-#define MW_SHIFT_TIME 300
-#define MW_SHIFT_PAUSE 1000
+#define MW_SHIFT_TIME 300//Период сдвига текса
+#define MW_SHIFT_PAUSE 1000//Время паузы
+
+#define TITLE_FONT_PADDING 1//Отступы по вертикали у текста заголовка
+#define BODY_PADDING 1//Отступ списка от заголовка
+#define ITEM_FONT_PADDING 2//Отступы по вертикали у текста элемента меню
+#define ITEM_TEXT_RATIO 0.6//Соотношение ширины текста элемента ко всей строке
+#define ITEM_SPACE_RATIO 0.1//Соотношение отступа текста и значение ко всей строке
 
 uint8_t MenuWindow_calculateChildsCount(MenuItem* menuItem);
 void MenuWindow_resetShift(MenuWindow* menuWindow);
@@ -54,7 +60,7 @@ void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
 	for (int k=0; k<mW->childsCount; k++ )
 	{
 		if(i>=mW->pos && i<mW->pos +view_rows){
-			Layout layout={mW->layout.x,mW->layout.y+(i - mW->pos) * mW->itemHeight+mW->titleHeight,mW->layout.width*ITEM_TEXT_SPACE,mW->itemHeight};
+			Layout layout={mW->layout.x,mW->layout.y+(i - mW->pos) * mW->itemHeight+mW->titleHeight,mW->layout.width*ITEM_TEXT_RATIO,mW->itemHeight};
 			if(i==mW->select){
 				int delay = (mW->shStr.shiftFlag||mW->shStr.shift==0)? MW_SHIFT_PAUSE : MW_SHIFT_TIME;
 				if (TimeUtilities_getDelta32(curTime,mW->shStr.prevTime) > delay){
@@ -70,11 +76,10 @@ void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
 			}
 
 			if(currentChild->value!=NULL){
-				layout.x=mW->layout.x+mW->layout.width*ITEM_TEXT_SPACE;
-				layout.width=mW->layout.width*(1-ITEM_TEXT_SPACE);
+				layout.x=mW->layout.x+mW->layout.width*(ITEM_TEXT_RATIO+ITEM_SPACE_RATIO);
+				layout.width=mW->layout.width*(1-(ITEM_TEXT_RATIO+ITEM_SPACE_RATIO));
 				Canvas_drawAlignedString(mW->canvas,&layout,Value_toString(currentChild->value),mW->bodyFont,ALIGN_RIGHT,0);
 			}
-
 		}
 		currentChild=currentChild->next;
 		i++;

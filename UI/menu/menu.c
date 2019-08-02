@@ -45,11 +45,17 @@ extern float testFloat;
 extern uint8_t testEnum;
 
 
+
 void Menu_init(){
+
 	Value_initAsBool(&valueBool,&testBool,unitsBool);
 	Value_initAsInt(&valueInt,&testInt,unitsInt,0,50);
 	Value_initAsFloat(&valueFloat,&testFloat,unitsFloat,0,50,2);
 	Value_initAsEnum(&valueEnum,&testEnum,unitsEnum,0);
 
 
+
+
 }
+
+

@@ -5,10 +5,7 @@
 #include "stack.h"
 #include "canvas.h"
 
-#define TITLE_FONT_PADDING 1
-#define BODY_PADDING 1
-#define ITEM_FONT_PADDING 2
-#define ITEM_TEXT_SPACE 0.7
+
 
 
 
