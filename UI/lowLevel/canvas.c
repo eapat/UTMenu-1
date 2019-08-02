@@ -124,13 +124,18 @@ void Canvas_drawLineV(Canvas* canvas, uint8_t x, uint8_t y, uint8_t len) {
 
 /*
  * Установка стиля
- * enum Frame_style style=FRAME_TRANSPARENT,FRAME_BLACK,FRAME_WHITE
+ * enum Frame_style style=
+ * FRAME_TRANSPARENT - белая рамка, прозрачная заливка
+ * FRAME_BLACK - белая рамка, черная заливка
+ * FRAME_WHITE - белая рамка, белая заливка
+ * FRAME_LAYOUT_MASK - черная рамка, прозрачная заливка
  */
 void Canvas_setStyle(Canvas* canvas,enum Frame_style style){
 
 	canvas->pen.color=1;
 	canvas->pen.style=PS_SOLID;
 	canvas->pen.width=1;
+
 
 	if(style==FRAME_TRANSPARENT){
 		canvas->brush.color=0;
@@ -143,6 +148,11 @@ void Canvas_setStyle(Canvas* canvas,enum Frame_style style){
 	else if (style==FRAME_WHITE){
 		canvas->brush.color=1;
 		canvas->brush.style=BS_SOLID;
+	}
+	else if(style==FRAME_LAYOUT_MASK){
+		canvas->pen.color=0;
+		canvas->brush.color=0;
+		canvas->brush.style=BS_CLEAR;
 	}
 }
 

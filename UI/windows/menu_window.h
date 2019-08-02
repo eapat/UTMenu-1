@@ -10,6 +10,14 @@
 #define ITEM_FONT_PADDING 2
 #define ITEM_TEXT_SPACE 0.7
 
+
+
+typedef struct {
+	uint32_t prevTime; //время предыдощего прохода
+	uint8_t shiftFlag; //флаг необходимости сдвига
+	uint8_t shift;	   //количество сдвигаемых символов
+}MWShiftString;
+
 //Структура MenuWindow
 typedef struct {
 	MenuItem* rootItem;//корневой элемент меню
@@ -26,6 +34,7 @@ typedef struct {
 	uint8_t titleHeight;//высота заголовка (с прозрачным промежутком снизу BODY_PADDING)
 	uint8_t itemHeight;//высота одного элемента
 	uint8_t viewRows;//количество строк, которые можем вывести
+	MWShiftString shStr;	// Парамеры сдвига бегущей строки
 }MenuWindow;
 
 void MenuWindow_init(MenuWindow* menuWindow,Canvas* canvas,Layout layout,Font* titleFont, Font* bodyFont);

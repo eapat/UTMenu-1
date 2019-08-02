@@ -1,7 +1,12 @@
 #include "menu_window.h"
 #include <stdbool.h>
+#include "time_utilities.h"
+
+#define MW_SHIFT_TIME 300
+#define MW_SHIFT_PAUSE 1000
 
 uint8_t MenuWindow_calculateChildsCount(MenuItem* menuItem);
+void MenuWindow_resetShift(MenuWindow* menuWindow);
 
 /*
  * Инициализация MenuWindow
@@ -48,20 +53,23 @@ void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
 	{
 		if(i>=mW->pos && i<mW->pos +view_rows){
 			Layout layout={mW->layout.x,mW->layout.y+(i - mW->pos) * mW->itemHeight+mW->titleHeight,mW->layout.width*ITEM_TEXT_SPACE,mW->itemHeight};
-			Canvas_drawAlignedString(mW->canvas,&layout,currentChild->text,mW->bodyFont,ALIGN_LEFT,0);
 			if(i==mW->select){
+				int delay = (mW->shStr.shiftFlag||mW->shStr.shift==0)? MW_SHIFT_PAUSE : MW_SHIFT_TIME;
+				if (TimeUtilities_getDelta32(curTime,mW->shStr.prevTime) > delay){
+					mW->shStr.prevTime=curTime;
+					mW->shStr.shift=!mW->shStr.shiftFlag?mW->shStr.shift+1:0;
+				}
+				mW->shStr.shiftFlag=Canvas_drawAlignedString(mW->canvas,&layout,currentChild->text,mW->bodyFont,ALIGN_LEFT,mW->shStr.shift);
 				layout.width=mW->layout.width;
 				Canvas_drawFrame(mW->canvas,&layout,FRAME_TRANSPARENT);
+			}
+			else{
+				Canvas_drawAlignedString(mW->canvas,&layout,currentChild->text,mW->bodyFont,ALIGN_LEFT,0);
 			}
 		}
 		currentChild=currentChild->next;
 		i++;
 	}
-
-	//uint8_t x1 = 0;
-	//uint8_t y1 = (mW->select - mW->pos) * mW->bodyFont->height;
-	//Canvas_drawPixel(mW->canvas, x1,y1,true);
-
 }
 
 /*
@@ -80,6 +88,7 @@ bool MenuWindow_setRootItem(MenuWindow* menuWindow, MenuItem* rootItem){
 	Stack_push(&menuWindow->stack,rootItem);
 	menuWindow->pos=0;
 	menuWindow->select=0;
+	MenuWindow_resetShift(menuWindow);
 
 	return true;
 }
@@ -107,6 +116,14 @@ MenuItem* MenuWindow_enter(MenuWindow* menuWindow){
 }
 
 /*
+ * Сброс сдвига в активной строке
+ */
+void MenuWindow_resetShift(MenuWindow* menuWindow){
+	menuWindow->shStr.shift = 0;
+	menuWindow->shStr.shiftFlag = true;
+}
+
+/*
  * Обработка выхода
  */
 void MenuWindow_back(MenuWindow* menuWindow){
@@ -126,6 +143,7 @@ void MenuWindow_incPosition(MenuWindow* menuWindow){
 			if (menuWindow->select - menuWindow->pos == menuWindow->viewRows) {
 				menuWindow->pos++;
 			}
+			MenuWindow_resetShift(menuWindow);
 		}
 }
 
@@ -138,6 +156,7 @@ void MenuWindow_decPosition(MenuWindow* menuWindow){
 			if (menuWindow->select < menuWindow->pos) {
 				menuWindow->pos--;
 			}
+			MenuWindow_resetShift(menuWindow);
 		}
 }
 
