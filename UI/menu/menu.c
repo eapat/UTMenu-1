@@ -1,6 +1,6 @@
 #include "menu.h"
 #include "stdio.h"
-
+#include "stdbool.h"
 
 #define MAKE_ITEM(Name, Child, Next, Text, Value) \
 		extern MenuItem Child; \
