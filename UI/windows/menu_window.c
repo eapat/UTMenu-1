@@ -1,6 +1,8 @@
 #include "menu_window.h"
 #include <stdbool.h>
 #include "time_utilities.h"
+#include "value.h"
+#include <stdio.h>
 
 #define MW_SHIFT_TIME 300
 #define MW_SHIFT_PAUSE 1000
@@ -32,7 +34,7 @@ void MenuWindow_init(MenuWindow* menuWindow,Canvas* canvas,Layout layout,Font* t
  * uint32_t curTime-текущее время в мс
  */
 void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
-	uint8_t scroll_width = 0;
+	//uint8_t scroll_width = 0;
 
 	//Отрисовываем заголовок
 
@@ -66,6 +68,13 @@ void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
 			else{
 				Canvas_drawAlignedString(mW->canvas,&layout,currentChild->text,mW->bodyFont,ALIGN_LEFT,0);
 			}
+
+			if(currentChild->value!=NULL){
+				layout.x=mW->layout.x+mW->layout.width*ITEM_TEXT_SPACE;
+				layout.width=mW->layout.width*(1-ITEM_TEXT_SPACE);
+				Canvas_drawAlignedString(mW->canvas,&layout,Value_toString(currentChild->value),mW->bodyFont,ALIGN_RIGHT,0);
+			}
+
 		}
 		currentChild=currentChild->next;
 		i++;
