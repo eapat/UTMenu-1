@@ -29,6 +29,8 @@ float testFloat;
 int testEnum;
 
 
+
+
 //Инициализация пользовательского интерфейса
 void UI_init(void){
 
@@ -39,35 +41,43 @@ void UI_init(void){
 
 	Font_init(&fontRegular,FONT_5x8, F_SPACING_0, FS_NORMAL, BG_TRANS);
 	Font_init(&fontBold,FONT_8x12B, F_SPACING_0, FS_NORMAL, BG_TRANS);
-	Font_init(&fontBoldS,FONT_8x12S, F_SPACING_0, FS_INVERT, BG_FILL);
+	Font_init(&fontBoldS,FONT_8x12S, F_SPACING_0, FS_NORMAL, BG_FILL);
 	Font_init(&fontTitleIverted,FONT_8x12B, F_SPACING_0, FS_INVERT, BG_FILL);
 
 	Canvas_init(&canvas,128,64);
-
-	//Value_Init_As_Int(&value,&fval,units,200,10,0);
-	//Value_initAsInt(&value,&fval,units,-20,5);
-
 	LCD_init();
 	Menu_init();
 
-	Layout layout={0,0,70,50};
+	Layout layout={0,0,70,30};
 
 	Canvas_calculateLayout(&canvas,&layout,LAYOUT_FILL);
 	MenuWindow_init(&menuWindow,&canvas,layout,&fontTitleIverted,&fontRegular);
 
-	Layout layout2={0,0,60,40};
+	Layout layout2={0,0,70,50};
 	Canvas_calculateLayout(&canvas,&layout2,LAYOUT_CENTER);
-	EditWindow_init(&editWindow,&canvas,layout2,&fontTitleIverted,&fontRegular);
+	EditWindow_init(&editWindow,&canvas,layout2,&fontTitleIverted,&fontBoldS);
 
 	MenuWindow_setRootItem(&menuWindow,&rootItem);
 }
 
 //Обработчик пользователского интерфейса, обновление дисплея, кнопок
 void UI_handler(void){
-	Canvas_clear(&canvas);
 
+	static uint32_t prevTime;
 
 	uint32_t time=HAL_GetTick();
+
+	if(time-prevTime>100)
+	{
+		prevTime=time;
+		Canvas_clear(&canvas);
+	}
+
+
+	testFloat=testInt/3251.0;
+
+	if(testBool)
+		testInt=0;
 
 	if(Boolpin_update(&btnPrev,time))
 	{
@@ -89,8 +99,12 @@ void UI_handler(void){
 		else
 		{
 			MenuItem* item=MenuWindow_enter(&menuWindow);
-			if(item!=&Null_Menu && item->value!=NULL)
-				EditWindow_start(&editWindow,item->value,item->text);
+
+			if(item!=&Null_Menu)
+					if(item->function!=NULL)
+						item->function();
+					else if(item->value!=NULL)
+						EditWindow_start(&editWindow,item->value,item->text);
 		}
 	}
 
@@ -101,11 +115,16 @@ void UI_handler(void){
 			MenuWindow_back(&menuWindow);
 	}
 
-
 	MenuWindow_draw(&menuWindow,time);
+
+
 	if(EditWindow_isRuning(&editWindow))
 		EditWindow_draw(&editWindow,time);
+
+
 	LCD_draw(&canvas);
+
+	testInt=HAL_GetTick()-time;
 
 
 }
