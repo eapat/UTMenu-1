@@ -26,7 +26,11 @@ MAKE_ITEM(rootItem,item1,Null_Menu,"root",NULL,NULL);
 		MAKE_ITEM(item13,Null_Menu,item14,"Ýหลฬลอา 13",&valueFloat,NULL);
 		MAKE_ITEM(item14,Null_Menu,item15,"Ýหลฬลอา 14",&valueEnum,NULL);
 		MAKE_ITEM(item15,Null_Menu,Null_Menu,"ัแ๐๎๑",&valueEnum,someFunc);
-	MAKE_ITEM(item2,Null_Menu,item3,"Ýหลฬลอา 2 ไ๋่ํํ๛้",NULL,NULL);
+	MAKE_ITEM(item2,item21,item3,"Ýหลฬลอา 2 ไ๋่ํํ๛้",NULL,NULL);
+		MAKE_ITEM(item21,item211,Null_Menu,"ยหฮฦลออÛษ 1",NULL,NULL);
+			MAKE_ITEM(item211,item2111,Null_Menu,"ยหฮฦลออÛษ 2",NULL,NULL);
+				MAKE_ITEM(item2111,item21111,Null_Menu,"ยหฮฦลออÛษ 3",NULL,NULL);
+					MAKE_ITEM(item21111,rootItem,Null_Menu,"ยหฮฦลออÛษ 4",NULL,NULL);
 	MAKE_ITEM(item3,Null_Menu,item4,"Ýหลฬลอา 3",NULL,NULL);
 	MAKE_ITEM(item4,Null_Menu,Null_Menu,"Ýหลฬลอา 4",NULL,NULL);
 

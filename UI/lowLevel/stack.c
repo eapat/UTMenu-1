@@ -18,3 +18,7 @@ void Stack_pop(Stack* stack){
 		stack->pos--;
 }
 
+void Stack_clear(Stack* stack){
+	stack->pos=1;
+}
+

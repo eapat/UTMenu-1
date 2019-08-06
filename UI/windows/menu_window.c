@@ -43,6 +43,10 @@ void MenuWindow_init(MenuWindow* menuWindow,Canvas* canvas,Layout layout,Font* t
 void MenuWindow_start(MenuWindow* menuWindow){
 	menuWindow->isRunning=true;
 	menuWindow->lifeTime=0;
+	menuWindow->shStr.prevTime=0;
+	Stack_clear(&menuWindow->stack);
+	MenuWindow_setRootItem(menuWindow,Stack_top(&menuWindow->stack));
+	Stack_pop(&menuWindow->stack);
 }
 
 /*
@@ -77,6 +81,9 @@ void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
 		return;
 
 	bool showScroll=true;
+
+	if(mW->shStr.prevTime==0)
+		mW->shStr.prevTime=curTime;
 	//Отрисовываем заголовок
 
 	Layout layout={mW->layout.x,mW->layout.y,mW->layout.width,mW->titleHeight-BODY_PADDING};
@@ -105,9 +112,10 @@ void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
 			if(i==mW->select){
 				int delay = (mW->shStr.shiftFlag||mW->shStr.shift==0)? MW_SHIFT_PAUSE : MW_SHIFT_TIME;
 				uint32_t delta=TimeUtilities_getDelta32(curTime,mW->shStr.prevTime);
-				mW->lifeTime+=delta;
+
 				if ( delta> delay){
 					mW->shStr.prevTime=curTime;
+					mW->lifeTime+=delta;
 					mW->shStr.shift=!mW->shStr.shiftFlag?mW->shStr.shift+1:0;
 				}
 				mW->shStr.shiftFlag=Canvas_drawAlignedString(mW->canvas,&layout,currentChild->text,mW->bodyFont,ALIGN_LEFT,mW->shStr.shift);
@@ -146,7 +154,7 @@ void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
 
 		Canvas_drawFrame(mW->canvas,&layout,FRAME_TRANSPARENT);
 
-		layout.height=(int)((float)mW->viewRows/mW->childsCount)*(mW->layout.height-mW->titleHeight);
+		layout.height=((float)mW->viewRows/mW->childsCount)*(mW->layout.height-mW->titleHeight);
 		layout.width=SCROLLBAR_WIDTH;
 		layout.y+=((float)mW->pos/mW->childsCount)*(mW->layout.height-mW->titleHeight);
 		Canvas_drawFrame(mW->canvas,&layout,FRAME_WHITE);
@@ -159,8 +167,6 @@ void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
  */
 bool MenuWindow_setRootItem(MenuWindow* menuWindow, MenuItem* rootItem){
 
-	if(!menuWindow->isRunning)
-			return false;
 	uint8_t childCount=MenuWindow_calculateChildsCount(rootItem);
 
 	if(childCount==0)
@@ -184,6 +190,8 @@ bool MenuWindow_setRootItem(MenuWindow* menuWindow, MenuItem* rootItem){
 MenuItem* MenuWindow_enter(MenuWindow* menuWindow){
 	if(!menuWindow->isRunning)
 		return &Null_Menu;
+
+	menuWindow->lifeTime=0;
 
 	MenuItem* currentChild=(MenuItem*)menuWindow->rootItem->child;
 	for(int i=0;i<menuWindow->childsCount;i++)
@@ -213,11 +221,18 @@ void MenuWindow_resetShift(MenuWindow* menuWindow){
  * Обработка выхода
  */
 void MenuWindow_back(MenuWindow* menuWindow){
-	if(menuWindow->isRunning && menuWindow->stack.pos>1){
-		Stack_pop(&menuWindow->stack);
-		MenuWindow_setRootItem(menuWindow,Stack_top(&menuWindow->stack));
-		Stack_pop(&menuWindow->stack);
+	if(menuWindow->isRunning){
+		menuWindow->lifeTime=0;
+
+		if(menuWindow->stack.pos>1){
+			Stack_pop(&menuWindow->stack);
+			MenuWindow_setRootItem(menuWindow,Stack_top(&menuWindow->stack));
+			Stack_pop(&menuWindow->stack);
+		}
+		else
+			MenuWindow_stop(menuWindow);
 	}
+
 }
 
 /*
@@ -231,6 +246,8 @@ void MenuWindow_incPosition(MenuWindow* menuWindow){
 			}
 			MenuWindow_resetShift(menuWindow);
 		}
+
+	menuWindow->lifeTime=0;
 }
 
 /*
@@ -244,6 +261,7 @@ void MenuWindow_decPosition(MenuWindow* menuWindow){
 			}
 			MenuWindow_resetShift(menuWindow);
 		}
+	menuWindow->lifeTime=0;
 }
 
 /*
