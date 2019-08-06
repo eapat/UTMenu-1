@@ -30,7 +30,7 @@ typedef struct {
 	float vlLocal;			//Переменная для хранения копии
 	char* headerText;		//Текст заголовка
 	EWShiftString shStr;	//Парамеры сдвига бегущей строки
-	uint32_t startTime; 	//Время начала сессии
+	uint32_t lifeTime; 		//Время "жизни" окна
 }EditWindow;
 
 void EditWindow_init(EditWindow* this,Canvas* canvas,Layout layout, Font* headerFont, Font* bodyFont);
