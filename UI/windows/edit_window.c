@@ -56,9 +56,10 @@ void EditWindow_init(EditWindow* this,Canvas* canvas,Layout layout, Font* header
  * 	EditWindow* this - целевой объект
  *	Value* val - редактируемое значение
  *	char* header - текст заголовка
+ *	uint32_t currentTime - текущее время в ms
  */
 
-void EditWindow_start(EditWindow* this, Value* val, char* header){
+void EditWindow_start(EditWindow* this, Value* val, char* header, uint32_t currentTime){
 	this->vlPt = val;
 	Value_copy(this->vlPt,&this->vlCopy);
 	this->vlLocal = *(float*)this->vlCopy.vl;
@@ -67,6 +68,7 @@ void EditWindow_start(EditWindow* this, Value* val, char* header){
 	this->shStr.shiftFlag = true;
 	this->inProgress = true;
 	this->headerText = header;
+	this->startTime = currentTime;
 }
 
 
@@ -166,3 +168,16 @@ void EditWindow_back(EditWindow* this){
 bool EditWindow_isRuning(EditWindow* this){
 	return this->inProgress;
 }
+
+
+
+/*
+ * Получить время существования окна
+ * 	EditWindow* this - целевой объект
+ *	uint32_t currentTime - текущее время в ms
+ */
+
+uint32_t EditWindow_getLifeTime(EditWindow* this, uint32_t currentTime){
+	return TimeUtilities_getDelta32(currentTime,this->startTime);
+}
+
