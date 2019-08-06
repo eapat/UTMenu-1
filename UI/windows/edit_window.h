@@ -28,8 +28,9 @@ typedef struct {
 	Value* vlPt;			//Указатель на "оригинальное" значение
 	Value vlCopy;			//Копия значения
 	float vlLocal;			//Переменная для хранения копии
-	char* headerText;		// Текст заголовка
-	EWShiftString shStr;	// Парамеры сдвига бегущей строки
+	char* headerText;		//Текст заголовка
+	EWShiftString shStr;	//Парамеры сдвига бегущей строки
+	uint32_t lifeTime; 		//Время "жизни" окна
 }EditWindow;
 
 void EditWindow_init(EditWindow* this,Canvas* canvas,Layout layout, Font* headerFont, Font* bodyFont);
@@ -41,5 +42,6 @@ void EditWindow_dec(EditWindow* this);
 void EditWindow_enter(EditWindow* this);
 void EditWindow_back(EditWindow* this);
 bool EditWindow_isRuning(EditWindow* this);
+uint32_t EditWindow_getLifeTime(EditWindow* this);
 
 #endif

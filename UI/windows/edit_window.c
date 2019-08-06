@@ -67,6 +67,7 @@ void EditWindow_start(EditWindow* this, Value* val, char* header){
 	this->shStr.shiftFlag = true;
 	this->inProgress = true;
 	this->headerText = header;
+	this->lifeTime = 0;
 }
 
 
@@ -79,7 +80,9 @@ void EditWindow_start(EditWindow* this, Value* val, char* header){
 void EditWindow_draw(EditWindow* this, uint32_t currentTime){
 	if (this->inProgress){
 		int delay = (this->shStr.shiftFlag||this->shStr.shift==0)? EW_SHIFT_PAUSE : EW_SHIFT_TIME;
-		if (TimeUtilities_getDelta32(currentTime,this->shStr.prevTime) > delay){
+		uint32_t delta = TimeUtilities_getDelta32(currentTime,this->shStr.prevTime);
+		this->lifeTime+=delta;
+		if (delta > delay){
 			this->shStr.prevTime=currentTime;
 			this->shStr.shift=!this->shStr.shiftFlag?this->shStr.shift+1:0;
 		}
@@ -166,3 +169,15 @@ void EditWindow_back(EditWindow* this){
 bool EditWindow_isRuning(EditWindow* this){
 	return this->inProgress;
 }
+
+
+
+/*
+ * Получить время существования окна
+ * 	EditWindow* this - целевой объект
+ */
+
+uint32_t EditWindow_getLifeTime(EditWindow* this){
+	return this->lifeTime;
+}
+
