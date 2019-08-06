@@ -34,6 +34,37 @@ void MenuWindow_init(MenuWindow* menuWindow,Canvas* canvas,Layout layout,Font* t
 	menuWindow->titleHeight=menuWindow->titleFont->height+TITLE_FONT_PADDING*2+BODY_PADDING;
 	menuWindow->itemHeight=menuWindow->bodyFont->height+2*ITEM_FONT_PADDING;
 	menuWindow->viewRows = (menuWindow->layout.height-menuWindow->titleHeight)/ menuWindow->itemHeight;
+	menuWindow->isRunning=false;
+}
+
+/*
+ * Старт окна
+ */
+void MenuWindow_start(MenuWindow* menuWindow){
+	menuWindow->isRunning=true;
+	menuWindow->lifeTime=0;
+}
+
+/*
+ * Останов окна
+ */
+void MenuWindow_stop(MenuWindow* menuWindow){
+	menuWindow->isRunning=false;
+	menuWindow->lifeTime=0;
+}
+
+/*
+ * Вернуть время жизни окна
+ */
+uint32_t MenuWindow_getLifeTime(MenuWindow* menuWindow){
+	return menuWindow->lifeTime;
+}
+
+/*
+ * true-если окно запущено
+ */
+bool MenuWindow_isRunning(MenuWindow* menuWindow){
+	return menuWindow->isRunning;
 }
 
 /*
@@ -41,7 +72,9 @@ void MenuWindow_init(MenuWindow* menuWindow,Canvas* canvas,Layout layout,Font* t
  * uint32_t curTime-текущее время в мс
  */
 void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
-	//uint8_t scroll_width = 0;
+
+	if(!mW->isRunning)
+		return;
 
 	bool showScroll=true;
 	//Отрисовываем заголовок
@@ -66,12 +99,14 @@ void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
 		//Отрисовываем видимые элементы
 		if(i>=mW->pos && i<mW->pos +view_rows){
 			//Большой контейнер для текста элемента
-			Layout layout={mW->layout.x,mW->layout.y+(i - mW->pos) * mW->itemHeight+mW->titleHeight,mW->layout.width*ITEM_TEXT_RATIO,mW->itemHeight};
+			Layout layout={mW->layout.x, (int)mW->layout.y+(i - mW->pos) * mW->itemHeight+mW->titleHeight, (int)mW->layout.width*ITEM_TEXT_RATIO,mW->itemHeight};
 
 			//Если этот элемент выделен, то надо его шевелить и отрисовать рамку вокруг него
 			if(i==mW->select){
 				int delay = (mW->shStr.shiftFlag||mW->shStr.shift==0)? MW_SHIFT_PAUSE : MW_SHIFT_TIME;
-				if (TimeUtilities_getDelta32(curTime,mW->shStr.prevTime) > delay){
+				uint32_t delta=TimeUtilities_getDelta32(curTime,mW->shStr.prevTime);
+				mW->lifeTime+=delta;
+				if ( delta> delay){
 					mW->shStr.prevTime=curTime;
 					mW->shStr.shift=!mW->shStr.shiftFlag?mW->shStr.shift+1:0;
 				}
@@ -111,7 +146,7 @@ void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
 
 		Canvas_drawFrame(mW->canvas,&layout,FRAME_TRANSPARENT);
 
-		layout.height=((float)mW->viewRows/mW->childsCount)*(mW->layout.height-mW->titleHeight);
+		layout.height=(int)((float)mW->viewRows/mW->childsCount)*(mW->layout.height-mW->titleHeight);
 		layout.width=SCROLLBAR_WIDTH;
 		layout.y+=((float)mW->pos/mW->childsCount)*(mW->layout.height-mW->titleHeight);
 		Canvas_drawFrame(mW->canvas,&layout,FRAME_WHITE);
@@ -124,6 +159,8 @@ void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
  */
 bool MenuWindow_setRootItem(MenuWindow* menuWindow, MenuItem* rootItem){
 
+	if(!menuWindow->isRunning)
+			return false;
 	uint8_t childCount=MenuWindow_calculateChildsCount(rootItem);
 
 	if(childCount==0)
@@ -145,6 +182,9 @@ bool MenuWindow_setRootItem(MenuWindow* menuWindow, MenuItem* rootItem){
  * возвращает &Null_Menu если смог провалиться
  */
 MenuItem* MenuWindow_enter(MenuWindow* menuWindow){
+	if(!menuWindow->isRunning)
+		return &Null_Menu;
+
 	MenuItem* currentChild=(MenuItem*)menuWindow->rootItem->child;
 	for(int i=0;i<menuWindow->childsCount;i++)
 	{
@@ -173,7 +213,7 @@ void MenuWindow_resetShift(MenuWindow* menuWindow){
  * Обработка выхода
  */
 void MenuWindow_back(MenuWindow* menuWindow){
-	if(menuWindow->stack.pos>1){
+	if(menuWindow->isRunning && menuWindow->stack.pos>1){
 		Stack_pop(&menuWindow->stack);
 		MenuWindow_setRootItem(menuWindow,Stack_top(&menuWindow->stack));
 		Stack_pop(&menuWindow->stack);
@@ -184,7 +224,7 @@ void MenuWindow_back(MenuWindow* menuWindow){
  * Обработка инкрементирования позиции
  */
 void MenuWindow_incPosition(MenuWindow* menuWindow){
-	if (menuWindow->select < menuWindow->childsCount - 1) {
+	if (menuWindow->isRunning && menuWindow->select < menuWindow->childsCount - 1) {
 		menuWindow->select++;
 			if (menuWindow->select - menuWindow->pos == menuWindow->viewRows) {
 				menuWindow->pos++;
@@ -197,7 +237,7 @@ void MenuWindow_incPosition(MenuWindow* menuWindow){
  * Обработка декрементирования позиции
  */
 void MenuWindow_decPosition(MenuWindow* menuWindow){
-	if (menuWindow->select > 0) {
+	if (menuWindow->isRunning && menuWindow->select > 0) {
 		menuWindow->select--;
 			if (menuWindow->select < menuWindow->pos) {
 				menuWindow->pos--;

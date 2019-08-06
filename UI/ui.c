@@ -66,14 +66,12 @@ void UI_handler(void){
 	static uint32_t prevTime;
 
 	uint32_t time=HAL_GetTick();
+	static uint8_t state=0;
 
-	if(time-prevTime>100)
-	{
-		prevTime=time;
-		Canvas_clear(&canvas);
-	}
+	Canvas_clear(&canvas);
 
 
+	testInt++;
 	testFloat=testInt/3251.0;
 
 	if(testBool)
@@ -115,6 +113,7 @@ void UI_handler(void){
 			MenuWindow_back(&menuWindow);
 	}
 
+
 	MenuWindow_draw(&menuWindow,time);
 
 
@@ -124,7 +123,7 @@ void UI_handler(void){
 
 	LCD_draw(&canvas);
 
-	testInt=HAL_GetTick()-time;
+
 
 
 }
