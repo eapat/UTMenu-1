@@ -13,5 +13,6 @@ typedef struct{
 void Stack_push(Stack* stack,MenuItem* menuItem);
 void Stack_pop(Stack* stack);
 MenuItem* Stack_top(Stack* stack);
+void Stack_clear(Stack* stack);
 
 #endif

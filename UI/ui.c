@@ -62,18 +62,10 @@ void UI_init(void){
 
 //Обработчик пользователского интерфейса, обновление дисплея, кнопок
 void UI_handler(void){
-
-	static uint32_t prevTime;
-
 	uint32_t time=HAL_GetTick();
+	Canvas_clear(&canvas);
 
-	if(time-prevTime>100)
-	{
-		prevTime=time;
-		Canvas_clear(&canvas);
-	}
-
-
+	testInt++;
 	testFloat=testInt/3251.0;
 
 	if(testBool)
@@ -83,20 +75,20 @@ void UI_handler(void){
 	{
 		if(EditWindow_isRuning(&editWindow))
 			EditWindow_dec(&editWindow);
-		else
+		else if(MenuWindow_isRunning(&menuWindow))
 			MenuWindow_decPosition(&menuWindow);
 	}
 	if(Boolpin_update(&btnNext,time)){
 		if(EditWindow_isRuning(&editWindow))
 			EditWindow_inc(&editWindow);
-		else
+		else if(MenuWindow_isRunning(&menuWindow))
 			MenuWindow_incPosition(&menuWindow);
 	}
 
 	if(Boolpin_update(&btnFunc,time)){
 		if(EditWindow_isRuning(&editWindow))
 			EditWindow_enter(&editWindow);
-		else
+		else if(MenuWindow_isRunning(&menuWindow))
 		{
 			MenuItem* item=MenuWindow_enter(&menuWindow);
 
@@ -106,25 +98,35 @@ void UI_handler(void){
 					else if(item->value!=NULL)
 						EditWindow_start(&editWindow,item->value,item->text);
 		}
+		else{
+			MenuWindow_start(&menuWindow);
+		}
 	}
 
 	if(Boolpin_update(&btnBack,time)){
 		if(EditWindow_isRuning(&editWindow))
 			EditWindow_back(&editWindow);
-		else
+		else if(MenuWindow_isRunning(&menuWindow))
 			MenuWindow_back(&menuWindow);
 	}
 
-	MenuWindow_draw(&menuWindow,time);
-
+	if (MenuWindow_isRunning(&menuWindow)){
+			MenuWindow_draw(&menuWindow,time);
+	}
 
 	if(EditWindow_isRuning(&editWindow))
+	{
 		EditWindow_draw(&editWindow,time);
+		if(EditWindow_getLifeTime(&editWindow)>2000){
+			EditWindow_stop(&editWindow);
+		}
+	}
+
+	else if(MenuWindow_isRunning(&menuWindow)){
+		if(MenuWindow_getLifeTime(&menuWindow)>2000)
+			MenuWindow_stop(&menuWindow);
+	}
 
 
 	LCD_draw(&canvas);
-
-	testInt=HAL_GetTick()-time;
-
-
 }

@@ -68,6 +68,7 @@ void EditWindow_start(EditWindow* this, Value* val, char* header){
 	this->inProgress = true;
 	this->headerText = header;
 	this->lifeTime = 0;
+	this->shStr.prevTime=0;
 }
 
 
@@ -80,10 +81,15 @@ void EditWindow_start(EditWindow* this, Value* val, char* header){
 void EditWindow_draw(EditWindow* this, uint32_t currentTime){
 	if (this->inProgress){
 		int delay = (this->shStr.shiftFlag||this->shStr.shift==0)? EW_SHIFT_PAUSE : EW_SHIFT_TIME;
+
+		if(this->shStr.prevTime==0)
+			this->shStr.prevTime=currentTime;
+
 		uint32_t delta = TimeUtilities_getDelta32(currentTime,this->shStr.prevTime);
-		this->lifeTime+=delta;
+
 		if (delta > delay){
 			this->shStr.prevTime=currentTime;
+			this->lifeTime+=delta;
 			this->shStr.shift=!this->shStr.shiftFlag?this->shStr.shift+1:0;
 		}
 
@@ -115,6 +121,7 @@ void EditWindow_stop(EditWindow* this){
 void EditWindow_inc(EditWindow* this){
 	if (this->inProgress){
 		Value_inc(&this->vlCopy);
+		this->lifeTime=0;
 	}
 }
 
@@ -126,6 +133,7 @@ void EditWindow_inc(EditWindow* this){
 void EditWindow_dec(EditWindow* this){
 	if (this->inProgress){
 		Value_dec(&this->vlCopy);
+		this->lifeTime=0;
 	}
 }
 

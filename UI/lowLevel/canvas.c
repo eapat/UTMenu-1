@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define TEXT_PADDING 1 //Отступ текста от края рамки при выводе строки с выравниванием
 /*
  * Инициализация холста
  */
@@ -264,7 +265,7 @@ void Canvas_drawString(Canvas* canvas, uint8_t x, uint8_t y, char *s,Font* font)
 }
 
 /*
- * Отрисовка строки с выравниванием
+ * Отрисовка строки с выравниванием (оставляет по 1 пикселю с каждой стороны)
  * Layout* layout-контейнер в котором надо отрисовать
  * Font* font-указатель на шрифт
  * char* s-указатель на строку
@@ -293,7 +294,7 @@ bool Canvas_drawAlignedString(Canvas* canvas,Layout* layout,char* s,Font* font,e
 	for(int i=n;i<(strLenght);i++)
 	{
 		tempWidth+=Font_getWidth(font, *(s+i))+1+font->spacing;
-		if(tempWidth<layout->width)
+		if(tempWidth<layout->width-TEXT_PADDING*2)
 		{
 			sNum++;
 			sWidth=tempWidth;
@@ -306,11 +307,11 @@ bool Canvas_drawAlignedString(Canvas* canvas,Layout* layout,char* s,Font* font,e
 
 	//Считаем координату Х исходя из выравнивания
 	if(align==ALIGN_LEFT)
-		 x = layout->x;
+		 x = layout->x+TEXT_PADDING;
 	else if(align==ALIGN_CENTER)
-		 x=layout->x+(layout->width-sWidth)/2;
+		 x=layout->x+(layout->width-sWidth)/2+TEXT_PADDING;
 	else if(align==ALIGN_RIGHT)
-		 x=layout->x+layout->width-1-sWidth;
+		 x=layout->x+layout->width-1-sWidth-TEXT_PADDING;
 
 	//Координата У по центру контейнера
 	uint8_t y=layout->y+(layout->height-font->height)/2;
