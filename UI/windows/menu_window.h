@@ -15,6 +15,8 @@ typedef struct {
 	uint8_t shift;	   //количество сдвигаемых символов
 }MWShiftString;
 
+enum WindowState{CLOSED,OPEN,PAUSED};
+
 //Структура MenuWindow
 typedef struct {
 	MenuItem* rootItem;//корневой элемент меню
@@ -33,7 +35,7 @@ typedef struct {
 	uint8_t viewRows;//количество строк, которые можем вывести
 	MWShiftString shStr;	// Парамеры сдвига бегущей строки
 	uint32_t lifeTime;//Время жизни окна в миллисекунда
-	bool isRunning;
+	enum WindowState windowState;
 }MenuWindow;
 
 void MenuWindow_init(MenuWindow* menuWindow,Canvas* canvas,Layout layout,Font* titleFont, Font* bodyFont);
@@ -48,5 +50,6 @@ void MenuWindow_incPosition(MenuWindow* menuWindow);
 void MenuWindow_decPosition(MenuWindow* menuWindow);
 MenuItem* MenuWindow_enter(MenuWindow* menuWindow);
 void MenuWindow_back(MenuWindow* menuWindow);
+void MenuWindow_pause(MenuWindow* menuWindow);
 
 #endif

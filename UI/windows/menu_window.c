@@ -34,31 +34,39 @@ void MenuWindow_init(MenuWindow* menuWindow,Canvas* canvas,Layout layout,Font* t
 	menuWindow->titleHeight=menuWindow->titleFont->height+TITLE_FONT_PADDING*2+BODY_PADDING;
 	menuWindow->itemHeight=menuWindow->bodyFont->height+2*ITEM_FONT_PADDING;
 	menuWindow->viewRows = (menuWindow->layout.height-menuWindow->titleHeight)/ menuWindow->itemHeight;
-	menuWindow->isRunning=false;
+	menuWindow->windowState=CLOSED;
 }
 
 /*
  * Старт окна
  */
 void MenuWindow_start(MenuWindow* menuWindow){
-	menuWindow->isRunning=true;
+	menuWindow->windowState=OPEN;
 	menuWindow->lifeTime=0;
 	menuWindow->shStr.prevTime=0;
+}
+
+/*
+ * Пауза окна
+ */
+void MenuWindow_pause(MenuWindow* menuWindow){
+	menuWindow->windowState=PAUSED;
+}
+
+
+/*
+ * Останов окна со сбросом стэка вызовов
+ */
+void MenuWindow_stop(MenuWindow* menuWindow){
+	menuWindow->windowState=CLOSED;
+	menuWindow->lifeTime=0;
 	Stack_clear(&menuWindow->stack);
 	MenuWindow_setRootItem(menuWindow,Stack_top(&menuWindow->stack));
 	Stack_pop(&menuWindow->stack);
 }
 
 /*
- * Останов окна
- */
-void MenuWindow_stop(MenuWindow* menuWindow){
-	menuWindow->isRunning=false;
-	menuWindow->lifeTime=0;
-}
-
-/*
- * Вернуть время жизни окна
+ * Вернуть время бездействия окна
  */
 uint32_t MenuWindow_getLifeTime(MenuWindow* menuWindow){
 	return menuWindow->lifeTime;
@@ -68,7 +76,7 @@ uint32_t MenuWindow_getLifeTime(MenuWindow* menuWindow){
  * true-если окно запущено
  */
 bool MenuWindow_isRunning(MenuWindow* menuWindow){
-	return menuWindow->isRunning;
+	return menuWindow->windowState!=CLOSED;
 }
 
 /*
@@ -77,7 +85,7 @@ bool MenuWindow_isRunning(MenuWindow* menuWindow){
  */
 void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
 
-	if(!mW->isRunning)
+	if(mW->windowState==CLOSED)
 		return;
 
 	bool showScroll=true;
@@ -115,7 +123,8 @@ void MenuWindow_draw(MenuWindow* mW,uint32_t curTime){
 
 				if ( delta> delay){
 					mW->shStr.prevTime=curTime;
-					mW->lifeTime+=delta;
+					if(mW->windowState==OPEN)
+						mW->lifeTime+=delta;
 					mW->shStr.shift=!mW->shStr.shiftFlag?mW->shStr.shift+1:0;
 				}
 				mW->shStr.shiftFlag=Canvas_drawAlignedString(mW->canvas,&layout,currentChild->text,mW->bodyFont,ALIGN_LEFT,mW->shStr.shift);
@@ -188,7 +197,7 @@ bool MenuWindow_setRootItem(MenuWindow* menuWindow, MenuItem* rootItem){
  * возвращает &Null_Menu если смог провалиться
  */
 MenuItem* MenuWindow_enter(MenuWindow* menuWindow){
-	if(!menuWindow->isRunning)
+	if(!menuWindow->windowState==OPEN)
 		return &Null_Menu;
 
 	menuWindow->lifeTime=0;
@@ -221,7 +230,7 @@ void MenuWindow_resetShift(MenuWindow* menuWindow){
  * Обработка выхода
  */
 void MenuWindow_back(MenuWindow* menuWindow){
-	if(menuWindow->isRunning){
+	if(menuWindow->windowState==OPEN){
 		menuWindow->lifeTime=0;
 
 		if(menuWindow->stack.pos>1){
@@ -239,7 +248,7 @@ void MenuWindow_back(MenuWindow* menuWindow){
  * Обработка инкрементирования позиции
  */
 void MenuWindow_incPosition(MenuWindow* menuWindow){
-	if (menuWindow->isRunning && menuWindow->select < menuWindow->childsCount - 1) {
+	if (menuWindow->windowState==OPEN && menuWindow->select < menuWindow->childsCount - 1) {
 		menuWindow->select++;
 			if (menuWindow->select - menuWindow->pos == menuWindow->viewRows) {
 				menuWindow->pos++;
@@ -254,7 +263,7 @@ void MenuWindow_incPosition(MenuWindow* menuWindow){
  * Обработка декрементирования позиции
  */
 void MenuWindow_decPosition(MenuWindow* menuWindow){
-	if (menuWindow->isRunning && menuWindow->select > 0) {
+	if (menuWindow->windowState==OPEN && menuWindow->select > 0) {
 		menuWindow->select--;
 			if (menuWindow->select < menuWindow->pos) {
 				menuWindow->pos--;
