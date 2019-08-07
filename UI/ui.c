@@ -73,21 +73,19 @@ void UI_handler(void){
 
 	if(Boolpin_update(&btnPrev,time))
 	{
-		if(EditWindow_isRuning(&editWindow))
 			EditWindow_dec(&editWindow);
-		else if(MenuWindow_isRunning(&menuWindow))
 			MenuWindow_decPosition(&menuWindow);
 	}
 	if(Boolpin_update(&btnNext,time)){
-		if(EditWindow_isRuning(&editWindow))
 			EditWindow_inc(&editWindow);
-		else if(MenuWindow_isRunning(&menuWindow))
 			MenuWindow_incPosition(&menuWindow);
 	}
 
 	if(Boolpin_update(&btnFunc,time)){
-		if(EditWindow_isRuning(&editWindow))
+		if(EditWindow_isRuning(&editWindow)){
 			EditWindow_enter(&editWindow);
+			MenuWindow_start(&menuWindow);
+		}
 		else if(MenuWindow_isRunning(&menuWindow))
 		{
 			MenuItem* item=MenuWindow_enter(&menuWindow);
@@ -104,26 +102,29 @@ void UI_handler(void){
 	}
 
 	if(Boolpin_update(&btnBack,time)){
-		if(EditWindow_isRuning(&editWindow))
+		if(EditWindow_isRuning(&editWindow)){
 			EditWindow_back(&editWindow);
-		else if(MenuWindow_isRunning(&menuWindow))
+			MenuWindow_start(&menuWindow);
+		}
+		else
 			MenuWindow_back(&menuWindow);
 	}
 
-	if (MenuWindow_isRunning(&menuWindow)){
-			MenuWindow_draw(&menuWindow,time);
-	}
+
+	MenuWindow_draw(&menuWindow,time);
+	EditWindow_draw(&editWindow,time);
 
 	if(EditWindow_isRuning(&editWindow))
 	{
-		EditWindow_draw(&editWindow,time);
-		if(EditWindow_getLifeTime(&editWindow)>2000){
+		MenuWindow_pause(&menuWindow);
+		if(EditWindow_getLifeTime(&editWindow)>5000){
 			EditWindow_stop(&editWindow);
+			MenuWindow_start(&menuWindow);
 		}
 	}
 
 	else if(MenuWindow_isRunning(&menuWindow)){
-		if(MenuWindow_getLifeTime(&menuWindow)>2000)
+		if(MenuWindow_getLifeTime(&menuWindow)>10000)
 			MenuWindow_stop(&menuWindow);
 	}
 
